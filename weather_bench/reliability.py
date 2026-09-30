@@ -4,6 +4,10 @@ from email.utils import parsedate_to_datetime
 import math
 
 
+def json_mode_enabled(config,model):
+    return config.get("model_json_mode",{}).get(model,config.get("json_mode",False))
+
+
 def provider_preferences(config,model):
     fallback=bool(config.get('provider_allow_fallbacks',False))
     result={'allow_fallbacks':fallback,'require_parameters':True}

@@ -1,0 +1,673 @@
+{
+  "scope": "Initial six-model batch only; one attempt per model and condition. Small-model extension excluded from these counts.",
+  "study_id": "20260930T155730Z-ae0a07",
+  "source_sha256": "2fac76f552627e8eb2bc6305040614ad10ccf17fdb96f9ce33f646b72cf19ef3",
+  "attempts": 18,
+  "failures": 7,
+  "failure_stop_reasons": {
+    "task_timeout": 1,
+    "token_budget": 6
+  },
+  "hybrid_attempts": 6,
+  "hybrid_invoked_skill": 0,
+  "hybrid_read_guide": 1,
+  "hybrid_passed": 4,
+  "failed_runs": [
+    {
+      "run_id": "0de52fb9146e423fae3ef5dc1de716fd",
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "stop_reason": "task_timeout",
+      "tokens": 142337,
+      "prompt_tokens": 127195,
+      "seconds": 600.2752858749591,
+      "figure_delivered": true,
+      "answer_present": false,
+      "action_counts": {
+        "python": 9,
+        "api_error": 1
+      },
+      "skill_calls": 0,
+      "failed_skill_calls": 0,
+      "errors": [
+        {
+          "turn": 1,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 20, in <module>\nIndexError: invalid index to scalar variable.\n"
+        },
+        {
+          "turn": 3,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 66, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 1594, in isel\n    variable = self._variable.isel(indexers, missing_dims=missing_dims)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/variable.py\", line 1141, in isel\n    indexers = drop_dims_from_indexers(indexers, self.dims, missing_dims)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/utils.py\", line 938, in drop_dims_from_indexers\n    raise ValueError(\nValueError: Dimensions {'valid_time'} do not exist. Expected one or more of ('number', 'step', 'latitude', 'longitude')\n"
+        },
+        {
+          "turn": 4,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 85, in <module>\nIndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (7,) (6,) \n"
+        },
+        {
+          "turn": 5,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 88, in <module>\nValueError: operands could not be broadcast together with shapes (7,6) (7,) \n"
+        }
+      ]
+    },
+    {
+      "run_id": "db1373fdee314d4cacd6aa174cd41042",
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "skills",
+      "stop_reason": "token_budget",
+      "tokens": 210995,
+      "prompt_tokens": 198276,
+      "seconds": 77.28845016704872,
+      "figure_delivered": false,
+      "answer_present": false,
+      "action_counts": {
+        "read_skill": 1,
+        "python": 11
+      },
+      "skill_calls": 0,
+      "failed_skill_calls": 0,
+      "errors": [
+        {
+          "turn": 1,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 14, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/common.py\", line 306, in __getattr__\n    raise AttributeError(\nAttributeError: 'Dataset' object has no attribute 'geo_bounds'\n"
+        },
+        {
+          "turn": 2,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 37, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/indexes/base.py\", line 1159, in astype\n    new_values = values.astype(dtype, copy=copy)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/arrays/datetimes.py\", line 764, in astype\n    return dtl.DatetimeLikeArrayMixin.astype(self, dtype, copy)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/arrays/datetimelike.py\", line 514, in astype\n    raise TypeError(msg)\nTypeError: Cannot cast DatetimeIndex to dtype datetime64[D]\n"
+        },
+        {
+          "turn": 3,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/indexes/base.py\", line 1159, in astype\n    new_values = values.astype(dtype, copy=copy)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/arrays/datetimes.py\", line 764, in astype\n    return dtl.DatetimeLikeArrayMixin.astype(self, dtype, copy)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/pandas/core/arrays/datetimelike.py\", line 514, in astype\n    raise TypeError(msg)\nTypeError: Cannot cast DatetimeIndex to dtype datetime64[D]\n"
+        },
+        {
+          "turn": 4,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 17, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        },
+        {
+          "turn": 5,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "TypeError: float() argument must be a string or a real number, not 'tuple'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 1729, in sel\n    ds = self._to_temp_dataset().sel(\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataset.py\", line 3073, in sel\n    query_results = map_index_queries(\n                    ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 219, in map_index_queries\n    results.append(index.sel(labels, **options))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexes.py\", line 859, in sel\n    label_array = normalize_label(label, dtype=self.coord_dtype)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexes.py\", line 625, in normalize_label\n    value = np.asarray(value, dtype=dtype)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: setting an array element with a sequence.\n"
+        },
+        {
+          "turn": 6,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 35, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        },
+        {
+          "turn": 7,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        },
+        {
+          "turn": 8,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "<string>:8: UserWarning: The specified chunks separate the stored chunks along dimension \"latitude\" starting at index 4. This could degrade performance. Instead, consider rechunking after loading.\n<string>:8: UserWarning: The specified chunks separate the stored chunks along dimension \"longitude\" starting at index 3. This could degrade performance. Instead, consider rechunking after loading.\nTraceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        },
+        {
+          "turn": 9,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        },
+        {
+          "turn": 10,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "  File \"<string>\", line 20\n    region_mask = (data.latitude >= lat_bounds[1]) & (data.latitude <= lat_bounds[0]) & \n                                                                                        ^\nSyntaxError: invalid syntax\n"
+        },
+        {
+          "turn": 11,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 893, in __getitem__\n    return self.isel(indexers=self._item_key_to_dict(key))\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 874, in _item_key_to_dict\n    key = indexing.expanded_indexer(key, self.ndim)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 261, in expanded_indexer\n    raise IndexError(\"too many indices\")\nIndexError: too many indices\n"
+        }
+      ]
+    },
+    {
+      "run_id": "cafc6f566b8f4611adc63feabd600b8a",
+      "model": "anthropic/claude-sonnet-5.5",
+      "arm": "skills_only",
+      "stop_reason": "token_budget",
+      "tokens": 205920,
+      "prompt_tokens": 200761,
+      "seconds": 64.65198149997741,
+      "figure_delivered": true,
+      "answer_present": false,
+      "action_counts": {
+        "read_skill": 7,
+        "protocol_error": 7,
+        "skill": 12
+      },
+      "skill_calls": 12,
+      "failed_skill_calls": 0,
+      "errors": [
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        }
+      ]
+    },
+    {
+      "run_id": "e8cb022883c44f6fa4893c02686d77f1",
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills_only",
+      "stop_reason": "token_budget",
+      "tokens": 210364,
+      "prompt_tokens": 187543,
+      "seconds": 526.2534674580675,
+      "figure_delivered": false,
+      "answer_present": false,
+      "action_counts": {
+        "protocol_error": 9,
+        "read_skill": 5,
+        "skill": 9
+      },
+      "skill_calls": 9,
+      "failed_skill_calls": 1,
+      "errors": [
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 17,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/clipped_celsius.zarr",
+            "--output",
+            "/work/week1.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "0,1,2,3,4,5,6"
+          ],
+          "message": "Error: --index '0,1,2,3,4,5,6' is not an integer\n"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        }
+      ]
+    },
+    {
+      "run_id": "5c75555be035402982f9f9110623a0e0",
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "python",
+      "stop_reason": "token_budget",
+      "tokens": 219805,
+      "prompt_tokens": 190344,
+      "seconds": 154.9567783329403,
+      "figure_delivered": false,
+      "answer_present": false,
+      "action_counts": {
+        "python": 11
+      },
+      "skill_calls": 0,
+      "failed_skill_calls": 0,
+      "errors": [
+        {
+          "turn": 1,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 53, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataset.py\", line 3073, in sel\n    query_results = map_index_queries(\n                    ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 211, in map_index_queries\n    grouped_indexers = group_indexers_by_index(obj, indexers, options)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/indexing.py\", line 158, in group_indexers_by_index\n    raise ValueError(\nValueError: Could not automatically create PandasIndex for coord 'time' with 0 dimensions. Please explicitly set the index using `set_xindex`.\n"
+        },
+        {
+          "turn": 2,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "  File \"<string>\", line 52\n    mask = (grid_lon >= service_lon_min) & (grid_lon <= service_lon_max) & \n                                                                           ^\nSyntaxError: invalid syntax\n"
+        },
+        {
+          "turn": 3,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "  File \"<string>\", line 40\n    mask = (grid_lon >= service_lon_min) & (grid_lon <= service_lon_max) & \n                                                                           ^\nSyntaxError: invalid syntax\n"
+        },
+        {
+          "turn": 4,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "rn await open_group(*args, use_consolidated=use_consolidated, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py\", line 859, in open_group\n    store_path = await make_store_path(store, mode=mode, storage_options=storage_options, path=path)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/zarr/storage/_common.py\", line 482, in make_store_path\n    store = await make_store(store_like, mode=mode, storage_options=storage_options)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/zarr/storage/_common.py\", line 406, in make_store\n    return await make_store(Path(parsed.path), mode=mode, storage_options=storage_options)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/zarr/storage/_common.py\", line 398, in make_store\n    return await LocalStore.open(root=store_like, mode=mode, read_only=_read_only)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/zarr/storage/_local.py\", line 206, in open\n    await store._open()\n  File \"/usr/local/lib/python3.12/site-packages/zarr/storage/_local.py\", line 218, in _open\n    raise FileNotFoundError(f\"{self.root} does not exist\")\nFileNotFoundError: /work/t2m_data_corrected.zarr does not exist\n"
+        },
+        {
+          "turn": 8,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "e number of data dimensions, ndim=1\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 153, in <module>\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/dataset.py\", line 405, in __init__\n    variables, coord_names, dims, indexes, _ = merge_data_and_coords(\n                                               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/structure/merge.py\", line 1238, in merge_data_and_coords\n    coords = create_coords_with_default_indexes(coords, data_vars)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/coordinates.py\", line 1275, in create_coords_with_default_indexes\n    variable = as_variable(obj, name=name, auto_convert=False)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/variable.py\", line 160, in as_variable\n    obj = Variable([], obj)\n          ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/variable.py\", line 398, in __init__\n    super().__init__(\n  File \"/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py\", line 261, in __init__\n    self._dims = self._parse_dimensions(dims)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py\", line 505, in _parse_dimensions\n    raise ValueError(\nValueError: dimensions () must have the same length as the number of data dimensions, ndim=1\n"
+        },
+        {
+          "turn": 9,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "/site-packages/xarray/core/dataset.py\", line 405, in __init__\n    variables, coord_names, dims, indexes, _ = merge_data_and_coords(\n                                               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/structure/merge.py\", line 1238, in merge_data_and_coords\n    coords = create_coords_with_default_indexes(coords, data_vars)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/coordinates.py\", line 1275, in create_coords_with_default_indexes\n    variable = as_variable(obj, name=name, auto_convert=False)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/variable.py\", line 160, in as_variable\n    obj = Variable([], obj)\n          ^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/core/variable.py\", line 398, in __init__\n    super().__init__(\n  File \"/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py\", line 261, in __init__\n    self._dims = self._parse_dimensions(dims)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py\", line 505, in _parse_dimensions\n    raise ValueError(\nValueError: dimensions () must have the same length as the number of data dimensions, ndim=1\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 158, in <module>\nTypeError: '>=' not supported between instances of 'Array' and 'int'\n"
+        },
+        {
+          "turn": 10,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 36, in <module>\nTypeError: '>=' not supported between instances of 'Array' and 'int'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 187, in <module>\n  File \"/usr/local/lib/python3.12/json/__init__.py\", line 179, in dump\n    for chunk in iterable:\n                 ^^^^^^^^\n  File \"/usr/local/lib/python3.12/json/encoder.py\", line 432, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/usr/local/lib/python3.12/json/encoder.py\", line 406, in _iterencode_dict\n    yield from chunks\n  File \"/usr/local/lib/python3.12/json/encoder.py\", line 326, in _iterencode_list\n    yield from chunks\n  File \"/usr/local/lib/python3.12/json/encoder.py\", line 439, in _iterencode\n    o = _default(o)\n        ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/json/encoder.py\", line 180, in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nTypeError: Object of type float32 is not JSON serializable\n"
+        },
+        {
+          "turn": 11,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "message": "Traceback (most recent call last):\n  File \"<string>\", line 31, in <module>\nTypeError: '>=' not supported between instances of 'Array' and 'int'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 125, in <module>\nNameError: name 'period_end_lead_days' is not defined\n"
+        }
+      ]
+    },
+    {
+      "run_id": "924d9a4c7cc0496a93f1a9fd4164b3f6",
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "skills_only",
+      "stop_reason": "token_budget",
+      "tokens": 212022,
+      "prompt_tokens": 184529,
+      "seconds": 105.4981361249229,
+      "figure_delivered": false,
+      "answer_present": false,
+      "action_counts": {
+        "protocol_error": 9,
+        "read_skill": 7,
+        "skill": 19
+      },
+      "skill_calls": 19,
+      "failed_skill_calls": 2,
+      "errors": [
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 9,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/clipped.zarr",
+            "--output",
+            "/work/converted.zarr",
+            "--to-standard",
+            "t2m"
+          ],
+          "message": "usage: unit-convert.py [-h] -o PATH -i PATH [--variable VARIABLE]\n                       [--to-units TO_UNITS] [--to-standard]\n                       [--standard-name STANDARD_NAME]\nunit-convert.py: error: unrecognized arguments: t2m\n"
+        },
+        {
+          "turn": 10,
+          "action": "skill",
+          "skill": "step-to-time",
+          "args": [
+            "--input",
+            "/work/regional_means.zarr",
+            "--output",
+            "/work/time_realized.zarr"
+          ],
+          "message": "Error: /work/regional_means.zarr does not satisfy required dimensions ({init_time, lat, lon, prediction_timedelta} missing ['lat', 'lon']); dims=['number', 'step']\n"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Unterminated string starting at: line 1 column 1035 (char 1034)"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Unterminated string starting at: line 1 column 1035 (char 1034)"
+        }
+      ]
+    },
+    {
+      "run_id": "d2724a79e86b41af8bb1da9ea9a4931d",
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "skills_only",
+      "stop_reason": "token_budget",
+      "tokens": 220615,
+      "prompt_tokens": 218549,
+      "seconds": 35.771174749941565,
+      "figure_delivered": false,
+      "answer_present": false,
+      "action_counts": {
+        "read_skill": 7,
+        "skill": 15,
+        "protocol_error": 3
+      },
+      "skill_calls": 15,
+      "failed_skill_calls": 7,
+      "errors": [
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 5,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/inputs/archive.zarr",
+            "--variable",
+            "t2m",
+            "--time",
+            "2026-09-27",
+            "--output",
+            "/work/t2m_forecast.zarr"
+          ],
+          "message": "usage: select_dim.py [-h] -o PATH -i PATH --dim DIM [--index INDEX]\n                     [--value VALUE]\nselect_dim.py: error: the following arguments are required: --dim\n"
+        },
+        {
+          "turn": 6,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/inputs/archive.zarr",
+            "--variable",
+            "t2m",
+            "--time",
+            "2026-09-27",
+            "--dim",
+            "step",
+            "--index",
+            "0:41",
+            "--output",
+            "/work/t2m_forecast.zarr"
+          ],
+          "message": "usage: select_dim.py [-h] -o PATH -i PATH --dim DIM [--index INDEX]\n                     [--value VALUE]\nselect_dim.py: error: unrecognized arguments: --variable t2m --time 2026-09-27\n"
+        },
+        {
+          "turn": 8,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/inputs/archive.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "0:41",
+            "--output",
+            "/work/t2m_forecast.zarr"
+          ],
+          "message": "Error: --index '0:41' is not an integer\n"
+        },
+        {
+          "turn": 10,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/t2m_forecast_step0.zarr",
+            "--variable",
+            "t2m",
+            "--output",
+            "/work/t2m_clipped_step0.zarr",
+            "--bbox",
+            "5.0/33.0/5.0/42.0"
+          ],
+          "message": "usage: clip.py [-h] -o PATH -i PATH [--bbox BBOX] [--geojson GEOJSON]\n               [--keep-outside]\nclip.py: error: unrecognized arguments: --variable t2m\n"
+        },
+        {
+          "turn": 12,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/t2m_forecast_step0.zarr",
+            "--output",
+            "/work/t2m_clipped_step0.zarr",
+            "--bbox",
+            "5.0/33.0/5.0/42.0"
+          ],
+          "message": "Error: --bbox 5.0/33.0/5.0/42.0 selects no grid cells; check the extent and N/W/S/E order.\n"
+        },
+        {
+          "turn": 14,
+          "action": "skill",
+          "skill": "resolve-region",
+          "args": [
+            "KEN",
+            "--output",
+            "/work/kenya_bbox.json"
+          ],
+          "message": "usage: resolve.py [-h] [--geojson GEOJSON] code\nresolve.py: error: unrecognized arguments: --output /work/kenya_bbox.json\n"
+        },
+        {
+          "turn": 16,
+          "action": "skill",
+          "skill": "step-to-time",
+          "args": [
+            "--input",
+            "/work/t2m_clipped_step0.zarr",
+            "--output",
+            "/work/t2m_timealigned_step0.zarr"
+          ],
+          "message": "Error: /work/t2m_clipped_step0.zarr does not satisfy required dimensions ({init_time, lat, lon, prediction_timedelta} missing ['init_time', 'prediction_timedelta']); dims=['number', 'latitude', 'longitude']\n"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "message": "Read this skill guide before invoking it"
+        }
+      ]
+    }
+  ],
+  "hybrid_prompt_evidence": {
+    "python_instruction": "Use Python for inspection, custom calculations, or serializing output as needed.",
+    "skill_introduction": "You also have the following actions:",
+    "requires_skill_use": false,
+    "system_prompt_sha256": "86cf2072f443dc8307d6ad2124e002609d6b5bc898f7060d1d1de69704ad3c59"
+  },
+  "interpretation": [
+    "Observed: 0/6 hybrid attempts invoked any skill; 1/6 read a guide. The four hybrid passes were Python implementations.",
+    "The hybrid prompt leads with Python and adds optional skill actions. It does not require a discovery step or prefer relevant skills.",
+    "This is a measured adoption/design problem, not evidence that executing skills reduces accuracy. Prompt effects on a particular trajectory remain hypotheses.",
+    "Failed strict-skill runs include malformed/foreign tool-call envelopes, missing guide prerequisites, CLI-argument errors, composition-contract errors, and artifact serialization rejections.",
+    "Sonnet executed 12 skills successfully and produced a figure; XML-like wrappers and a literal numeric array in artifact submission prevented delivery. This does not independently validate its intermediate numbers.",
+    "Ministral Python attempts repeatedly failed indexing, datetime handling, syntax, and serialization. Qwen hybrid additionally used an incorrect longitude normalization.",
+    "Six failures exhausted cumulative tokens; one exhausted task time. Stopping limits identify the endpoint, while traces identify the mechanisms.",
+    "Do not change previous scores. Test skill discovery/preference plus Python recovery in a separately versioned condition; repeat matched attempts with controlled routing."
+  ]
+}

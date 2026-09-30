@@ -19,6 +19,9 @@ def test_registered_retry_selection(tmp_path):
     with pytest.raises(ValueError):validate_retry_manifest(bad,tmp_path,pin)
     bad=copy.deepcopy(config);bad['max_calls']+=1
     with pytest.raises(ValueError):validate_retry_manifest(bad,tmp_path,pin)
+    for key,value in [('skill_policy','guided-v1'),('max_run_cost_usd',2),('experiment_version','changed')]:
+        bad=copy.deepcopy(config);bad[key]=value
+        with pytest.raises(ValueError,match='Scientific settings changed'):validate_retry_manifest(bad,tmp_path,pin)
 
 
 def test_repair_view_never_selects_best_or_hides_cost():
@@ -32,6 +35,12 @@ def test_repair_view_never_selects_best_or_hides_cost():
     assert [r['run_id'] for r in view['runs']]==['passed','failed','retry']
     assert view['runs'][-1]['status']=='token_budget' and len(view['prior_provider_attempts'])==1
     assert base['runs'][-1]['status']=='api_error'
+    retry['config'].update(comparison_label='Heat recovery',model_transport_note='Provider changed')
+    retry['started_at']='2026-09-30T17:00:00Z'
+    view=repair_views([base,retry])[0]
+    assert view['config']['study_label']=='Heat recovery'
+    assert view['config']['model_transport_note']=='Provider changed'
+    assert view['latest_activity_at']==retry['started_at']
 
 
 def test_shared_deadline_is_task_outcome_not_provider_outage():

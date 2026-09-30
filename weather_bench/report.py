@@ -14,6 +14,9 @@ MODEL_PROFILES={
     "deepseek/deepseek-v3.2":{"label":"DeepSeek V3.2","weights":"Open","category":"Large MoE"},
     "qwen/qwen3-30b-a3b-instruct-2507":{"label":"Qwen3 30B A3B","weights":"Open","category":"Compact MoE"}}
 MODEL_PROFILES.update({
+    "qwen/qwen-2.5-7b-instruct":{"label":"Qwen2.5 7B","weights":"Open","category":"Small"},
+    "google/gemma-3-4b-it":{"label":"Gemma 3 4B","weights":"Open","category":"Small"},
+    "meta-llama/llama-3.1-8b-instruct":{"label":"Llama 3.1 8B","weights":"Open","category":"Small"},
     "mistralai/ministral-3b-2512":{"label":"Ministral 3 3B","weights":"Open","category":"Small"},
     "meta-llama/llama-3.2-1b-instruct":{"label":"Llama 3.2 1B","weights":"Open","category":"Small"},
     "meta-llama/llama-3.2-3b-instruct":{"label":"Llama 3.2 3B","weights":"Open","category":"Small"},
@@ -40,7 +43,7 @@ def public_text(value):
 
 
 def public_event(event):
-    result={k:event[k] for k in ("action","skill","args","returncode","seconds","turn","http_status","retry_number","wait_seconds","native_finish_reason") if k in event}
+    result={k:event[k] for k in ("action","skill","args","returncode","seconds","turn","http_status","retry_number","wait_seconds","native_finish_reason","cache_hit","cached_execution_seconds","status","next_request_bound_usd","run_remaining_usd","study_remaining_usd","unconfirmed_reserve_usd") if k in event}
     if "fields" in event:
         result["fields"]=json.loads(public_text(json.dumps(event["fields"])))
     for key in ("code","stdout","stderr","message"):
@@ -90,6 +93,7 @@ def public_audit(run):
               "usage":{k:usage.get(k) for k in ("prompt_tokens","completion_tokens","total_tokens","cost")}}
         call["usage"]["cached_tokens"]=(usage.get("prompt_tokens_details") or {}).get("cached_tokens",0)
         call["usage"]["reasoning_tokens"]=(usage.get("completion_tokens_details") or {}).get("reasoning_tokens",0)
+        if 'budget_admission' in request:call['budget_admission']=request['budget_admission']
         path=raw_dir/f"{index:03d}.json"
         if path.exists():
             raw=json.loads(path.read_text())
@@ -115,6 +119,10 @@ def public_audit(run):
 
 
 def failure_detail(run,native_reason=None):
+    if run['status'] in ('run_cost_budget','study_budget'):
+        return {'category':'task_budget','title':'Run spend limit' if run['status']=='run_cost_budget' else 'Study spend limit',
+                'provider':None,'code':run['status'],
+                'message':'Stopped before the next request: reported charges plus unconfirmed reservations and its conservative cost bound would exceed the allowance. Reserved amounts are not billed spend.'}
     if run['status']=='task_timeout':
         return {'category':'task_budget','title':'Task time limit exhausted','provider':None,'code':'task_timeout',
                 'message':'The shared task deadline was exhausted. This is a task outcome, including time spent generating responses and executing actions.'}
@@ -154,7 +162,10 @@ def failure_detail(run,native_reason=None):
 def export_dashboard():
     reference_path=ROOT/"results/reference.json"
     reference=json.loads(reference_path.read_text()) if reference_path.exists() else {"runs":[]}
-    case_map={c.id:c for c in cases()}
+    refined_reference=ROOT/'results/refined-reference.json'
+    if refined_reference.exists():
+        reference['runs']+=json.loads(refined_reference.read_text())['runs']
+    case_map={c.id:c for c in cases(include_refined=True)}
     tasks=[]
     for case in case_map.values():
         ref=next((r for r in reference["runs"] if r["case_id"]==case.id),None)
@@ -179,7 +190,7 @@ def export_dashboard():
             runs.append({k:r[k] for k in ("run_id","case_id","model","arm","rep","status","answer","correctness","workflow","usage","solve_seconds","setup_seconds","wall_seconds","llm_seconds","execution_seconds","input_sha256","image_ids")})
             runs[-1]["original_status"]=r["status"]
             if r["run_id"] in sensitivity_runs:runs[-1]["sensitivity_audit"]=sensitivity_runs[r["run_id"]]
-            for key in ('scientific_correctness','figure','source_versions','network_events','recovery','http_attempts','provider_retries','retry_wait_seconds','retry_of'):
+            for key in ('scientific_correctness','figure','source_versions','network_events','recovery','http_attempts','provider_retries','retry_wait_seconds','retry_of','budget','skill_adoption'):
                 if key in r:runs[-1][key]=r[key]
             audit=public_audit(r)
             native_reason=next((q.get('native_finish_reason') for q in reversed(audit['model_calls']) if q.get('native_finish_reason')),None)
@@ -190,7 +201,7 @@ def export_dashboard():
             runs[-1]["audit"]=audit
         studies.append({"study_id":s["study_id"],"kind":s["kind"],"started_at":s["started_at"],
                         "quality":quality if quality and s["config"].get("protocol_version")==quality["protocol_version"] else None,"health":study_health(s),"finished_at":s.get("finished_at"),"planned_runs":s["planned_runs"],"runs":runs,
-                        "catalog_commit":s["catalog_commit"],"ledger":s["ledger"],
+                        "catalog_commit":s["catalog_commit"],"catalog_overlay_sha256":s.get("catalog_overlay_sha256"),"ledger":s["ledger"],
                         "resumed_from":s.get("resumed_from"),"resume_note":s.get("resume_note"),
                         "diagnostics":{"provider_failures":sum(r.get('status')=='api_error' for r in s.get('infrastructure_runs',[])),
                             "archived_interruptions":sum(r.get('status')=='interrupted' for r in s.get('infrastructure_runs',[])),
@@ -199,17 +210,18 @@ def export_dashboard():
                         "config":{k:v for k,v in s["config"].items() if k!="model_metadata"}})
     published=ROOT/"results/published"; published.mkdir(exist_ok=True)
     for s in studies:
-        (published/f"{s['study_id']}.json").write_text(json.dumps(s,indent=2,allow_nan=False)+"\n")
+        atomic_json(published/f"{s['study_id']}.json",s)
     available={s["study_id"]:s for s in studies}
     for path in published.glob("*.json"):
         s=json.loads(path.read_text()); available.setdefault(s["study_id"],s)
     studies=[available[k] for k in sorted(available)]
-    from .comparison import comparison_views,repair_views
+    from .comparison import comparison_views,repair_views,queued_comparison_parts
+    studies+=queued_comparison_parts(studies,ROOT)
     studies+=comparison_views(studies)
     studies+=repair_views(studies)
     from .statistics import paired_summary,condition_summary
     for s in studies:
-        s["paired_statistics"]=paired_summary(s["runs"],"skills_only" if "skills_only" in s["config"]["arms"] else "skills",len(s["config"]["models"]))
+        s["paired_statistics"]=paired_summary(s["runs"],s["config"].get("primary_skill_arm", "skills_only" if "skills_only" in s["config"]["arms"] else "skills"),len(s["config"]["models"]))
         s["condition_statistics"]=condition_summary(s["runs"])
         s["task_outcome_statistics"]=condition_summary(s["runs"],include_provider_errors=False)
     payload={"exported_at":datetime.now(timezone.utc).isoformat(),"schema_version":2,"cases":tasks,"studies":studies,"model_profiles":MODEL_PROFILES,

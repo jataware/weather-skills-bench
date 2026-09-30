@@ -2,8 +2,8 @@
 function studyLabel(s) { return s.config.study_label || (s.config.study_role==='small-model-extension'?'Small models · 1B / 3B':s.config.protocol_version==='skills-only-v2'?'Skills-only v2':'Archived pilot'); }
 const DATA = window.BENCHMARK_DATA || {cases: [], studies: []};
 const $ = id => document.getElementById(id);
-const LABEL = {skills_only: "Skills only", skills: "Skills available", python: "No Skills", python_one_shot: "Python · one shot", docs_only: "Docs + Python"};
-const COLOR = {skills_only: "#2563eb", skills: "#2563eb", python: "#ea580c", python_one_shot: "#7c3aed", docs_only: "#64748b"};
+const LABEL = {python: "Python only", skills_only: "Skills only", skills: "Python + skills", python_one_shot: "Python · one shot", docs_only: "Docs + Python"};
+const COLOR = {skills_only: "#2563eb", skills: "#059669", python: "#ea580c", python_one_shot: "#7c3aed", docs_only: "#64748b"};
 const ARMS = Object.keys(LABEL);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[c]));
 const mean = xs => xs.length ? xs.reduce((a,b) => a+b, 0)/xs.length : null;
@@ -24,11 +24,14 @@ const latestV2=DATA.studies.findLastIndex(s=>s.config?.protocol_version==='skill
 if(latestV2>=0)selectedStudy=latestV2;
 const latestE2E=DATA.studies.findLastIndex(s=>s.config?.study_role==='end-to-end' && s.runs.length);
 if(latestE2E>=0)selectedStudy=latestE2E;
+const latestRefined=DATA.studies.reduce((last,s,i)=>['cached-heat-v3','cached-heat-v4'].includes(s.config?.protocol_version) && (last<0 || (s.latest_activity_at || s.started_at)>=(DATA.studies[last].latest_activity_at || DATA.studies[last].started_at)) ? i : last,-1);
+if(latestRefined>=0)selectedStudy=latestRefined;
 if (selectedStudy < 0) selectedStudy = DATA.studies.length-1;
 let resultBasis = "capability";
-let sortKey = "success", sortDirection = -1, chartMetric = "success";
+let sortKey = "model", sortDirection = 1, chartMetric = "success";
 const visibleArms = new Set(ARMS.filter(a=>a!=="python_one_shot"));
 const study = () => DATA.studies[selectedStudy] || null;
+const orderedArms = () => ARMS.filter(a=>a!=="python_one_shot" && (study()?.config.arms || []).includes(a));
 const filteredRuns = () => (study()?.runs || []).filter(r => ($("model-select").value === "all" || r.model === $("model-select").value) && ($("case-select").value === "all" || r.case_id === $("case-select").value));
 const evaluable = r => !['api_error','interrupted','source_changed'].includes(r.status);
 const outcomeLabel = r => ({model_response_error:r.correctness.passed?'Pass · response error':'Response format error',api_error:'Provider error',interrupted:'Interrupted · unscored',source_changed:'Source unverified · unscored'}[r.status] || (r.correctness.passed?'Pass':'Fail'));
@@ -39,12 +42,13 @@ function healthLabel(s) {
   if(s.finished_at)return s.runs.length===s.planned_runs?'Complete':'Stopped · partial';
   if(window.BENCHMARK_SNAPSHOT)return 'Partial · snapshot';
   const h=s.health;
+  if(h?.state==='waiting')return 'Queued';
   if(h?.state==='running' && Date.now()-Date.parse(h.updated_at)<60000)return 'Running';
   return h?.state==='running'?'Update overdue':'Stopped';
 }
 function renderProgress(runs) {
   const s=study();if(!s)return;
-  const models=selectedModels(), cases=selectedCases(),arms=s.config.arms.filter(a=>a!=='python_one_shot');
+  const models=selectedModels(), cases=selectedCases(),arms=orderedArms();
   runs=runs.filter(r=>arms.includes(r.arm));
   const retryIds=s.config.retry_attempts?new Set(s.config.retry_attempts):null;
   const scheduled=retryIds?[...new Map(DATA.studies.flatMap(s=>s.runs).filter(r=>retryIds.has(r.run_id)).map(r=>[r.run_id,r])).values()]:null;
@@ -63,7 +67,7 @@ function renderProgress(runs) {
     const r=rs.length===1?rs[0]:null;
     const kind=r?(r.status==='api_error'?'provider':['interrupted','source_changed'].includes(r.status)?'unscored':r.correctness.passed?'pass':'fail'):rs.length?'mixed':current?'running':'pending';
     const label=!scheduledCell?'Not scheduled':r?(r.status==='model_response_error'?'Response error':{provider:'Provider error',unscored:'Unscored',pass:'Pass',fail:'Fail'}[kind]):rs.length?`${rs.filter(r=>evaluable(r)&&r.correctness.passed).length} pass / ${rs.length} recorded`:current?'Running':'Pending';
-    return `<button ${scheduledCell?'':'disabled'} class="coverage-result coverage-${kind}" data-cell-model="${esc(model)}" data-cell-case="${id}" data-cell-arm="${arm}" aria-label="${esc(modelLabel(model)+', '+id+', '+LABEL[arm]+': '+label)}"><span>${esc(arm==='skills_only'?'Skills':LABEL[arm])}</span><b>${label}</b></button>`;
+    return `<button ${scheduledCell?'':'disabled'} class="coverage-result coverage-${kind}" data-cell-model="${esc(model)}" data-cell-case="${id}" data-cell-arm="${arm}" aria-label="${esc(modelLabel(model)+', '+id+', '+LABEL[arm]+': '+label)}"><span>${esc(LABEL[arm])}</span><b>${label}</b></button>`;
   }).join('')}</div></td>`).join('')}</tr>`).join('')}</tbody></table>`;
   $('coverage').querySelectorAll('[data-cell-model]').forEach(button=>button.addEventListener('click',()=>{
     const rs=runs.filter(r=>r.model===button.dataset.cellModel && r.case_id===button.dataset.cellCase && r.arm===button.dataset.cellArm);
@@ -73,7 +77,7 @@ function renderProgress(runs) {
 }
 function aggregate(runs) {
   const groups = [];
-  for (const model of selectedModels()) for (const arm of (study()?.config.arms || []).filter(a=>a!=="python_one_shot")) {
+  for (const model of selectedModels()) for (const arm of orderedArms()) {
     const all = runs.filter(r=>r.model === model && r.arm === arm), rs=all.filter(included);
     const passed = rs.filter(r=>r.correctness.passed).length, total = cost(rs);
     groups.push({model, arm, attempts:all.length, n: rs.length, passed, success: rs.length?passed/rs.length*100:null,
@@ -131,10 +135,11 @@ function renderCharts(groups) {
 }
 function renderTable(groups) {
   groups.sort((a,b) => {
-    const av=sortKey==='model' ? modelLabel(a.model) : a[sortKey], bv=sortKey==='model' ? modelLabel(b.model) : b[sortKey];
+    const value=g=>sortKey==='model'?modelLabel(g.model):sortKey==='arm'?ARMS.indexOf(g.arm):g[sortKey];
+    const av=value(a), bv=value(b);
     if (av===null || bv===null) return av===bv ? 0 : av===null ? 1 : -1;
     const result=typeof av==='string' ? av.localeCompare(bv) : av-bv;
-    return result*sortDirection || a.latency-b.latency;
+    return result*sortDirection || modelLabel(a.model).localeCompare(modelLabel(b.model)) || ARMS.indexOf(a.arm)-ARMS.indexOf(b.arm);
   });
   $("comparison").innerHTML=groups.map(g=>`<tr><td><button class="text-button model-name" data-group-model="${esc(g.model)}" data-group-arm="${g.arm}">${esc(modelLabel(g.model))}</button><span class="weight-label">${esc(DATA.model_profiles?.[g.model]?.weights || '')}</span></td><td>${condition(g.arm)}</td><td class="numeric"><span class="success-value">${g.n?Math.round(g.success)+'%':'—'}</span><span class="rate-count">${g.n?g.passed+"/"+g.n+" · "+wilson(g.passed,g.n).map(x=>Math.round(x*100)).join("–")+"%":"No task outcome"}</span></td><td class="numeric">${secs(g.latency)}</td><td class="numeric">${tokens(g.tokens)}</td><td class="numeric">${g.n?money(g.cost):'—'}</td><td class="numeric">${!g.passed?'—':money(g.cost_per_success)}</td><td class="numeric ${g.errors?'error':'muted'}">${g.errors || '—'}</td><td class="numeric muted">${g.adoption===null?'—':`${Math.round(g.adoption*g.n)}/${g.n}`}</td><td class="numeric muted">${g.workflow===null?'—':`${Math.round(g.workflow*g.n)}/${g.n}`}</td></tr>`).join('') || '<tr><td colspan="10" class="empty">No results in this selection.</td></tr>';
   document.querySelectorAll('[data-group-model]').forEach(button=>button.addEventListener('click',()=>showGroup(button.dataset.groupModel,button.dataset.groupArm)));
@@ -146,7 +151,9 @@ function renderTable(groups) {
   });
 }
 function renderPaired(runs) {
-  const arm=study()?.config.arms.includes('skills_only')?'skills_only':'skills',rows=[];
+  const arm=study()?.config.primary_skill_arm || (study()?.config.arms.includes('skills_only')?'skills_only':'skills'),rows=[];
+  $('paired-title').textContent=`Paired effect · ${LABEL[arm]} vs. Python only`;
+  $('paired-wins').textContent=`${LABEL[arm]} wins / Python only wins`;
   const source=(study()?.runs || []).filter(r=>$('case-select').value==='all' || r.case_id===$('case-select').value);
   for(const model of [...new Set(source.map(r=>r.model))]) {
     const a=source.filter(r=>r.model===model && r.arm===arm),b=source.filter(r=>r.model===model && r.arm==='python');
@@ -197,6 +204,7 @@ function renderScatter(runs) {
   });
 }
 function renderRuns(runs) {
+  $("run-legend").innerHTML=orderedArms().map(a=>condition(a)).join("")+"<span>● Pass &nbsp; ○ Fail &nbsp; × Provider error</span>";
   const selected=selectedRuns(runs);
   $("runs").innerHTML=selected.map(r=>`<tr><td><button class="text-button model-name" data-run="${esc(r.run_id)}">${esc(modelLabel(r.model))}</button><div class="run-condition">${condition(r.arm)}</div></td><td>${esc(DATA.cases.find(c=>c.id===r.case_id)?.title || r.case_id)}</td><td class="${r.correctness.passed?'pass':'fail'}">${outcomeLabel(r)}</td><td class="numeric">${secs(r.solve_seconds)}</td><td class="numeric">${tokens(r.usage.total_tokens)}</td><td class="numeric">${money(r.usage.cost_complete?r.usage.known_cost_usd:null)}</td><td class="numeric">${['skills','skills_only'].includes(r.arm)?skillCalls(r).length:'—'}</td><td><button class="text-button" data-run="${esc(r.run_id)}">View log →</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">No attempts in this selection.</td></tr>';
   bindRunLinks($("runs"));renderScatter(selected);
@@ -208,10 +216,12 @@ function renderResults() {
   const fullRepair=s?.repair_progress && $('model-select').value==='all' && $('case-select').value==='all';
   const reportedSpend=fullRepair?s.ledger.spent:knownCost(spendRuns);
   $("study-status").textContent=s ? `${studyLabel(s)} · ${healthLabel(s)}` : 'No model runs';
-  $("study-summary").innerHTML=[`<b>${runs.length}</b> ${s?.repair_progress?'current outcomes':'recorded attempts'}`,`<b>${runs.filter(evaluable).length}</b> task outcomes`,`<b>${new Set(runs.map(r=>r.model)).size}</b> models`,`<b>${new Set(runs.map(r=>r.case_id)).size}</b> tasks`,`<b>${s?.config.repetitions || 0}</b> repetition${s?.config.repetitions===1?'':'s'}`,`<b>${cost(spendRuns)===null?'≥'+money(reportedSpend):money(reportedSpend)}</b> ${cost(spendRuns)===null?'reported spend · billing incomplete':'reported spend'}${prior.length?' · includes original failures':''}`,...(errors?[`<span class="error">${errors} provider errors</span>`]:[])].map(x=>`<span>${x}</span>`).join('');
+  $("study-summary").innerHTML=[`<b>${runs.length}</b> ${s?.repair_progress?'current outcomes':'recorded attempts'}`,`<b>${runs.filter(evaluable).length}</b> task outcomes`,`<b>${selectedModels().length}</b> models`,`<b>${selectedCases().length}</b> tasks`,`<b>${s?.config.repetitions || 0}</b> repetition${s?.config.repetitions===1?'':'s'}`,`<b>${cost(spendRuns)===null?'≥'+money(reportedSpend):money(reportedSpend)}</b> ${cost(spendRuns)===null?'reported spend · billing incomplete':'reported spend'}${prior.length?' · includes original failures':''}`,...(errors?[`<span class="error">${errors} provider errors</span>`]:[])].map(x=>`<span>${x}</span>`).join('');
+  $("exclusion-note").hidden=!s?.config.exclusion_note;
+  $("exclusion-note").textContent=s?.config.exclusion_note || "";
   $("run-count").textContent=runs.length;
   const eligible=runs.filter(r=>['skills','skills_only'].includes(r.arm));
-  $("skill-adoption").textContent=eligible.length ? `Skill invocation: ${eligible.filter(r=>skillCalls(r).length).length}/${eligible.length} runs invoked a skill · ${eligible.filter(r=>docReads(r)).length}/${eligible.length} read a guide. ${study()?.config.arms.includes('skills_only')?'Model-written code disabled.':'Archived availability-only protocol.'}` : '';
+  $("skill-adoption").textContent=eligible.length ? `Skill invocation: ${eligible.filter(r=>skillCalls(r).length).length}/${eligible.length} runs invoked a skill · ${eligible.filter(r=>docReads(r)).length}/${eligible.length} read a guide. ${study()?.config.primary_skill_arm==='skills'?'Python is available in the main comparison; Skills only is a separate diagnostic.':study()?.config.arms.includes('skills_only')?'Model-written code disabled.':'Skills and Python available.'}` : '';
   renderProgress(runs);
   $("quality-note").hidden=!s?.quality;
   $("quality-note").innerHTML=s?.quality?`<b>${esc(s.quality.title)}</b><span>${esc(s.quality.note)}</span>`:'';
@@ -247,6 +257,7 @@ function showGroup(model,arm) {
 }
 function feedbackHTML(text) {
   let value;try{value=JSON.parse(text);}catch{return `<pre>${esc(text)}</pre>`;}
+  if(value && typeof value==='object' && 'remaining_budget' in value && 'result' in value) return feedbackHTML(JSON.stringify(value.result))+`<h4>Remaining budget</h4>${pretty(value.remaining_budget)}`;
   return (Array.isArray(value)?value:[value]).map((entry,i)=>{
     if(!entry || typeof entry!=='object')return pretty(entry);
     return `<div>${Array.isArray(value)?`<h4>Action ${i+1} feedback</h4>`:''}${Object.entries(entry).map(([key,value])=>`<h4>${esc(key)}</h4>${typeof value==='string'?`<pre>${esc(value || '(empty)')}</pre>`:pretty(value)}`).join('')}</div>`;
@@ -256,7 +267,7 @@ function showRun(id) {
   const r=[...(study()?.runs || []),...(study()?.prior_provider_attempts || [])].find(r=>r.run_id===id) || DATA.studies.flatMap(s=>s.runs).find(r=>r.run_id===id);if(!r)return;
   const audit=r.audit, events=audit?.events || r.trace, calls=audit?.model_calls || [];
   const title=e=>e.skill?`${e.action==='read_skill'?'Read guide':'Run skill'} · ${e.skill}`:e.action.replaceAll('_',' ');
-  const log=events.map((e,i)=>`<details class="log-event" ${e.returncode || e.action.endsWith('error')?'open':''}><summary><span class="event-number">${i+1}</span><b>${esc(title(e))}</b><span class="event-result ${e.returncode || e.action.endsWith('error')?'fail':'muted'}">${e.returncode===undefined?'':`exit ${e.returncode} · `}${e.seconds===undefined?'':secs(e.seconds)}</span></summary>${e.turn && calls.some(c=>c.number===e.turn)?`<p><button class="text-button" data-call-number="${e.turn}">Model response ${e.turn} →</button>${e.action==='read_skill' && calls.some(c=>c.number===e.turn+1)?` · <button class="text-button" data-call-number="${e.turn+1}" data-feedback="true">Read guide feedback →</button>`:''}</p>`:''}${e.wait_seconds!==undefined?`<p>${typeof e.http_status==='number'?'HTTP ':''}${esc(e.http_status)} · Retry ${esc(e.retry_number)} · Wait ${secs(e.wait_seconds)} · Counts toward the original request and time budgets.</p>`:''}${e.fields?`<h4>Artifact submission</h4>${pretty(e.fields)}`:''}${e.args?`<h4>Arguments</h4>${pretty(e.args)}`:''}${e.code!==undefined?`<h4>Executed Python</h4><pre>${esc(e.code)}</pre>`:''}${e.message?`<h4>Error / observation</h4><pre>${esc(e.message)}</pre>`:''}${e.stdout!==undefined?`<h4>stdout</h4><pre>${esc(e.stdout || '(empty)')}</pre>`:''}${e.stderr!==undefined?`<h4>stderr</h4><pre class="${e.returncode?'error-output':''}">${esc(e.stderr || '(empty)')}</pre>`:''}${!audit?'<p class="muted">Detailed output was not exported for this archived run.</p>':''}</details>`).join('');
+  const log=events.map((e,i)=>`<details class="log-event" ${e.returncode || e.action.endsWith('error')?'open':''}><summary><span class="event-number">${i+1}</span><b>${esc(title(e))}</b><span class="event-result ${e.returncode || e.action.endsWith('error')?'fail':'muted'}">${e.returncode===undefined?'':`exit ${e.returncode} · `}${e.seconds===undefined?'':secs(e.seconds)}${e.cache_hit?' · cached within run':''}</span></summary>${e.turn && calls.some(c=>c.number===e.turn)?`<p><button class="text-button" data-call-number="${e.turn}">Model response ${e.turn} →</button>${e.action==='read_skill' && calls.some(c=>c.number===e.turn+1)?` · <button class="text-button" data-call-number="${e.turn+1}" data-feedback="true">Read guide feedback →</button>`:''}</p>`:''}${e.wait_seconds!==undefined?`<p>${typeof e.http_status==='number'?'HTTP ':''}${esc(e.http_status)} · Retry ${esc(e.retry_number)} · Wait ${secs(e.wait_seconds)} · Counts toward the original request and time budgets.</p>`:''}${e.action==='budget_stop'?`<p>Remaining run allowance ${money(e.run_remaining_usd)} · Next request bound ${money(e.next_request_bound_usd)} · Unconfirmed reserve ${money(e.unconfirmed_reserve_usd)}</p>`:''}${e.fields?`<h4>Artifact submission</h4>${pretty(e.fields)}`:''}${e.args?`<h4>Arguments</h4>${pretty(e.args)}`:''}${e.code!==undefined?`<h4>Executed Python</h4><pre>${esc(e.code)}</pre>`:''}${e.message?`<h4>Error / observation</h4><pre>${esc(e.message)}</pre>`:''}${e.stdout!==undefined?`<h4>stdout</h4><pre>${esc(e.stdout || '(empty)')}</pre>`:''}${e.stderr!==undefined?`<h4>stderr</h4><pre class="${e.returncode?'error-output':''}">${esc(e.stderr || '(empty)')}</pre>`:''}${!audit?'<p class="muted">Detailed output was not exported for this archived run.</p>':''}</details>`).join('');
   const maxTokens=Math.max(1,...calls.map(c=>c.usage.total_tokens || 0));
   let cumulative=0, costKnown=true;
   const callRows=calls.map(c=>{
@@ -267,8 +278,9 @@ function showRun(id) {
   const caseInfo=DATA.cases.find(c=>c.id===r.case_id);
   showDetail(`${modelLabel(r.model)} · ${LABEL[r.arm]}`,`
     <p class="muted">${esc(caseInfo?.title || r.case_id)} · <span class="${r.correctness.passed?'pass':'fail'}">${outcomeLabel(r)}</span> · Stop: ${esc(r.status)}</p>
-    ${r.retry_of?`<p><button class="text-button" id="original-attempt">View original provider failure →</button></p>`:''}${r.failure_detail?`<p class="failure-explanation"><b>${esc(r.failure_detail.title)}</b> · ${esc(r.failure_detail.provider || 'Provider not reported')} · <code>${esc(r.failure_detail.code)}</code><br>${esc(r.failure_detail.message)}${r.original_status!==r.status?`<br>Classification corrected from ${esc(r.original_status)} using the recorded stopping evidence; original response and score retained.`:''}</p>`:''}
+    ${r.retry_of?`<p><button class="text-button" id="original-attempt">View original provider failure →</button></p>`:''}${r.failure_detail?`<p class="failure-explanation"><b>${esc(r.failure_detail.title)}</b>${r.failure_detail.provider?` · ${esc(r.failure_detail.provider)}`:''} · <code>${esc(r.failure_detail.code)}</code><br>${esc(r.failure_detail.message)}${r.original_status!==r.status?`<br>Classification corrected from ${esc(r.original_status)} using the recorded stopping evidence; original response and score retained.`:''}</p>`:''}
     <div class="run-metrics"><span><b>${secs(r.solve_seconds)}</b> solve time</span><span><b>${r.usage.total_tokens.toLocaleString()}</b> tokens</span><span><b>${r.usage.cost_complete?money(r.usage.known_cost_usd):'≥'+money(r.usage.known_cost_usd)}</b> ${r.usage.cost_complete?'billed':'reported · billing incomplete'}</span><span><b>${skillCalls(r).length}</b> skill calls</span><span><b>${docReads(r)}</b> guides read</span>${r.provider_retries!==undefined?`<span><b>${r.provider_retries}</b> provider retries · ${secs(r.retry_wait_seconds)} waiting</span>`:''}<button id="download-log" class="text-button">Download log ↓</button></div>
+    ${r.budget?`<p class="footnote">Run allowance: ${money(r.budget.cap_usd)} · Reported: ${money(r.budget.reported_usd)} · Unconfirmed reserve: ${money(r.budget.reserved_usd)}. Requests require room for a conservative cost estimate; reservations are not billed charges.</p>`:''}
     <nav class="log-tabs" aria-label="Run details"><button data-log-view="execution" aria-current="page">Execution log (${events.length})</button><button data-log-view="calls">Model calls (${calls.length})</button><button data-log-view="answer">Answer & grading</button></nav>
     <section id="log-execution"><p class="log-controls"><button class="text-button" id="expand-events">Expand all</button> · <button class="text-button" id="collapse-events">Collapse all</button></p>${log || '<p class="muted">No execution events recorded.</p>'}</section>
     <section id="log-calls" hidden><p class="footnote">Tokens per request: <span class="input-key">■ Input</span> <span class="output-key">■ Output</span>. Input includes conversation history and cached tokens.</p><div class="table-scroll"><table><thead><tr><th>Call</th><th>Token usage</th><th class="numeric">Total</th><th class="numeric">Cost</th><th class="numeric">Cumulative</th><th class="numeric">Time</th></tr></thead><tbody>${callRows || '<tr><td colspan="6">No returned model requests recorded.</td></tr>'}</tbody></table></div>
@@ -296,9 +308,10 @@ function renderTasks() {
   $("task-count").textContent=taskCases.length;
   $("validation-status").textContent=`${taskCases.filter(c=>c.oracle_verified ?? c.reference_passed).length}/${taskCases.length} answers verified · ${taskCases.filter(c=>c.reference_passed).length} catalog workflows pass`;
   const taskRuns=(study()?.runs || []).filter(r=>$('model-select').value==='all' || r.model===$('model-select').value);
-  const skillArm=study()?.config.arms.includes('skills_only')?'skills_only':'skills';
+  const arms=orderedArms();
+  $('task-headings').innerHTML='<th>Task</th><th class="numeric">Skill steps</th>'+arms.map(arm=>`<th class="numeric">${esc(LABEL[arm])} success</th>`).join('')+'<th>Traces</th>';
   const taskRate=(id,arm)=>{const rs=taskRuns.filter(r=>r.case_id===id && r.arm===arm && included(r));return rs.length?`${rs.filter(r=>r.correctness.passed).length}/${rs.length}`:'—';};
-  $('task-list').innerHTML=taskCases.map(c=>{const i=DATA.cases.indexOf(c);return `<tr><td><button class="text-button model-name" data-task="${i}">${esc(c.title)}</button><div class="run-condition">${c.suite==='end-to-end-v1'?'Real forecast · live retrieval':'Synthetic diagnostic'}</div></td><td class="numeric">${c.recipe.length}</td><td class="numeric">${taskRate(c.id,skillArm)}</td><td class="numeric">${taskRate(c.id,'python')}</td><td><button class="text-button" data-task="${i}">View ${taskRuns.filter(r=>r.case_id===c.id).length} runs →</button></td></tr>`}).join('');
+  $('task-list').innerHTML=taskCases.map(c=>{const i=DATA.cases.indexOf(c);return `<tr><td><button class="text-button model-name" data-task="${i}">${esc(c.title)}</button><div class="run-condition">${c.suite==='cached-forecast-v3'?'Real forecast · cached raw data':c.suite==='end-to-end-v1'?'Real forecast · live retrieval':'Synthetic diagnostic'}</div></td><td class="numeric">${c.recipe.length}</td>${arms.map(arm=>`<td class="numeric">${taskRate(c.id,arm)}</td>`).join('')}<td><button class="text-button" data-task="${i}">View ${taskRuns.filter(r=>r.case_id===c.id).length} runs →</button></td></tr>`}).join('');
   document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{
     const c=DATA.cases[Number(button.dataset.task)];
     showDetail(c.title,`<p class="muted">${esc(c.id)} · ${esc(c.fixture_kind)}</p><p>${esc(c.brief)}</p>${study()?.config.task_clarifications?.[c.id]?`<p><b>Shared clarification for this experiment:</b> ${esc(study().config.task_clarifications[c.id])}</p>`:''}<p>${esc(c.challenge)}</p>${c.source_notes?`<details><summary>Source documentation</summary><ul>${c.source_notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>`:''}${c.catalog_reference_error?`<p class="fail">Catalog reference did not complete. The independently verified answer remains the scoring target.</p>`:''}${c.reference_figure?`<a href="${esc(c.reference_figure)}" target="_blank" rel="noopener">View reference forecast figure ↗</a>`:''}<h3>Attempts & traces</h3>${runListHTML((study()?.runs || []).filter(r=>r.case_id===c.id && ($('model-select').value==='all' || r.model===$('model-select').value)))}<h3>Inputs</h3><p>${esc(c.inputs.join(', '))}</p><h3>Reference workflow</h3><ol>${c.recipe.map(n=>`<li><b>${esc(n.id)}</b> · ${esc(n.skill)}</li>`).join('')}</ol><p class="mono">${c.edges.map(([a,b])=>`${esc(a)} → ${esc(b)}`).join('<br>')}</p><p class="muted">Arrows show artifact dependencies. Independent branches may run in either order.</p><details><summary>Deterministic expected answer</summary>${pretty(c.expected)}<p>Absolute tolerance: ${esc(c.tolerance.atol)} · Relative tolerance: ${esc(c.tolerance.rtol)}. Exact dates, units, keys, and shapes.</p></details><details><summary>Reference arguments and answer schema</summary>${pretty({recipe:c.recipe,answer_schema:c.answer_schema})}</details>`);
@@ -308,11 +321,11 @@ function renderTasks() {
 function setFilters() {
   const runs=study()?.runs || [];
   const previousArm=$('run-arm-select').value;
-  $('run-arm-select').innerHTML='<option value="all">All conditions</option>'+ARMS.filter(arm=>runs.some(r=>r.arm===arm)).map(arm=>`<option value="${arm}">${esc(LABEL[arm])}</option>`).join('');
+  $('run-arm-select').innerHTML='<option value="all">All conditions</option>'+ARMS.filter(arm=>(study()?.config.arms || []).includes(arm)).map(arm=>`<option value="${arm}">${esc(LABEL[arm])}</option>`).join('');
   if([...$('run-arm-select').options].some(o=>o.value===previousArm))$('run-arm-select').value=previousArm;
   $("model-select").innerHTML='<option value="all">All models</option>'+(study()?.config.models || []).slice().sort().map(m=>`<option value="${esc(m)}">${esc(modelLabel(m))}</option>`).join('');
   $("case-select").innerHTML='<option value="all">All experiment tasks</option>'+(study()?.config.cases || []).map(id=>`<option value="${esc(id)}">${esc(DATA.cases.find(c=>c.id===id)?.title || id)}</option>`).join('');
-  $("conditions").innerHTML=ARMS.filter(arm=>arm!=='python_one_shot' && runs.some(r=>r.arm===arm)).map(arm=>`<label style="--series:${COLOR[arm]}"><input type="checkbox" value="${arm}" ${visibleArms.has(arm)?'checked':''}>${LABEL[arm]}</label>`).join('');
+  $("conditions").innerHTML=orderedArms().map(arm=>`<label style="--series:${COLOR[arm]}"><input type="checkbox" value="${arm}" ${visibleArms.has(arm)?'checked':''}>${LABEL[arm]}</label>`).join('');
   $("conditions").querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{input.checked?visibleArms.add(input.value):visibleArms.delete(input.value);renderCharts(aggregate(filteredRuns()))}));
 }
 function renderStudySelect() { $("study-select").innerHTML=DATA.studies.length ? DATA.studies.map((s,i)=>`<option value="${i}">${esc(studyLabel(s))} · ${s.runs.length}/${s.planned_runs} · ${healthLabel(s)}</option>`).join('') : '<option>No experiments</option>';
@@ -333,8 +346,10 @@ window.addEventListener('hashchange',()=>setView(location.hash.slice(1)));
 let resizeFrame;
 window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{renderCharts(aggregate(filteredRuns()));renderScatter(selectedRuns(filteredRuns()))})});
 $("condition-help").addEventListener('click',()=>{
-  if(!study()?.config.arms.includes('skills_only'))return showDetail('Archived experiment conditions',`<p>This pilot made skills available but also allowed Python in the same condition. Reading guides and invoking skills were optional; the traces show whether the agent actually used them.</p><p>The No Skills baseline could inspect, execute and revise. The archived one-shot baseline received one response and one execution, with no retry feedback. One-shot is excluded from the primary leaderboard and the new study.</p><p>These historical results are not pooled with the current skills-only protocol.</p>`);
-  showDetail('Experiment conditions',`<div class="table-scroll"><table><thead><tr><th>Condition</th><th>Skill access</th><th>Execution feedback</th></tr></thead><tbody><tr><td>Skills only</td><td>Required guides + skill scripts; no model code</td><td>Inspect, execute, revise</td></tr><tr><td>No Skills</td><td>None</td><td>Inspect, execute, revise</td></tr></tbody></table></div><p>Skills-only and No Skills have the same maximum budgets. The skills agent must read guides and invoke catalog operations. Arbitrary code is disabled; submission only serializes values from its output artifacts.</p><p>The baseline can inspect files, write Python, execute it and revise errors. This models an iterative coding-agent workflow; it is not a claim to run the full Codex or Claude Code product. One-shot results are retained only in archived logs.</p><p>Used skills counts runs with at least one non-help skill invocation, including failed calls. Workflow checks the reference skill sequence separately from answer correctness.</p>`);});
+  if(['cached-heat-v3','cached-heat-v4'].includes(study()?.config.protocol_version))return showDetail('Experiment conditions',`${study()?.config.skill_policy==='guided-v1'?`<p><b>Guided skills follow-up:</b> Python + skills must read relevant guides before execution and each skill's guide before invoking it. Instructions prefer supported skill operations, with Python available for gaps and recovery. Scientific scores and observed skill adoption are separate.</p><p><b>Limits:</b> $${study().config.max_run_cost_usd} per run · ${study().config.task_timeout_seconds/60} minutes · ${study().config.max_calls} responses · ${study().config.max_executions} executions · no cumulative token limit. Pre-request cost estimates and unknown-charge reservations count against the allowance; actual charges may be lower. $${study().config.max_cost_usd} study ceiling. This experiment changes both prompting and budgets; results are not pooled with earlier runs.</p>`:''}<p>${esc(study()?.config.model_transport_note || "")}</p><p><b>Main comparison:</b> Python + skills versus Python only, with identical budgets. Skills only is a separate diagnostic of the catalog's completeness.</p><p>All conditions receive the same hash-verified raw forecast archive, mounted read-only. Download/setup time is excluded from solve time. Each run starts with an empty work directory. Agent outputs and conversations are never shared.</p><p>Repeated successful skill calls may reuse unchanged artifacts within their own run; cache hits appear in the execution log. Both coding conditions can retain and reuse files. This is a warm-data analysis benchmark, not a network-speed measurement.</p>`);
+
+  if(!study()?.config.arms.includes('skills_only'))return showDetail('Archived experiment conditions',`<p>This pilot made skills available but also allowed Python in the same condition. Reading guides and invoking skills were optional; the traces show whether the agent actually used them.</p><p>The Python only baseline could inspect, execute and revise. The archived one-shot baseline received one response and one execution, with no retry feedback. One-shot is excluded from the primary leaderboard and the new study.</p><p>These historical results are not pooled with the current skills-only protocol.</p>`);
+  showDetail('Experiment conditions',`<div class="table-scroll"><table><thead><tr><th>Condition</th><th>Skill access</th><th>Execution feedback</th></tr></thead><tbody><tr><td>Python only</td><td>None</td><td>Inspect, execute, revise</td></tr><tr><td>Skills only</td><td>Required guides + skill scripts; no model code</td><td>Inspect, execute, revise</td></tr></tbody></table></div><p>Skills-only and Python only have the same maximum budgets. The skills agent must read guides and invoke catalog operations. Arbitrary code is disabled; submission only serializes values from its output artifacts.</p><p>The baseline can inspect files, write Python, execute it and revise errors. This models an iterative coding-agent workflow; it is not a claim to run the full Codex or Claude Code product. One-shot results are retained only in archived logs.</p><p>Used skills counts runs with at least one non-help skill invocation, including failed calls. Workflow checks the reference skill sequence separately from answer correctness.</p>`);});
 $('failure-help').addEventListener('click',()=>{
   const runs=filteredRuns().filter(r=>r.failure_detail), groups=new Map();
   for(const r of runs){const d=r.failure_detail,key=[d.category,d.provider,d.code].join('|');if(!groups.has(key))groups.set(key,{...d,runs:[]});groups.get(key).runs.push(r)}

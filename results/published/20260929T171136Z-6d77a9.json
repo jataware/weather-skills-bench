@@ -5867,6 +5867,7 @@
     }
   ],
   "catalog_commit": "1a0af7de3bba2d7a6c4fe67f291eb0e58640b5f5",
+  "catalog_overlay_sha256": null,
   "ledger": {
     "spent": 0.42736525920000007,
     "uncertain_cost": false,
@@ -5875,7 +5876,8 @@
   "resumed_from": "20260929T165435Z-114f8d",
   "resume_note": "Completed runs retained. All conditions for unavailable provider(s) rescheduled before any agent action; original transport failures retained separately.",
   "diagnostics": {
-    "provider_failures": 6,
+    "provider_failures": 5,
+    "archived_interruptions": 0,
     "interruption": {
       "study_id": "20260929T165435Z-114f8d",
       "model": "deepseek/deepseek-v3.2",

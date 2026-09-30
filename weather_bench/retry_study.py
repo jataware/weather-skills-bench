@@ -4,7 +4,8 @@ import json
 
 SCIENTIFIC_KEYS=('cases','arms','repetitions','seed','temperature','reasoning_effort','max_calls',
                  'max_executions','max_total_tokens','max_output_tokens','max_context_bytes',
-                 'task_timeout_seconds','execution_timeout_seconds','allow_batch','json_mode','task_clarifications')
+                 'task_timeout_seconds','execution_timeout_seconds','allow_batch','json_mode','task_clarifications',
+                 'skill_policy','max_run_cost_usd','experiment_version')
 
 
 def validate_retry_manifest(config,root,pin):
@@ -20,6 +21,7 @@ def validate_retry_manifest(config,root,pin):
     for rid in config['retry_attempts']:
         source,run=expected[rid]
         if source['catalog_tree_sha256']!=pin['catalog_tree_sha256']:raise ValueError('Catalog changed')
+        if source.get('catalog_overlay_sha256')!=pin.get('catalog_overlay_sha256'):raise ValueError('Catalog overlay changed')
         for key in SCIENTIFIC_KEYS:
             # An extension may contain only its own model, but shares all cases.
             if source['config'].get(key)!=config.get(key):raise ValueError('Scientific settings changed: '+key)

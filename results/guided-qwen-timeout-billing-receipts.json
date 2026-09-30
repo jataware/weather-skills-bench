@@ -1,0 +1,54 @@
+[
+  {
+    "run_id": "30214f0cb99c4224b29985e53269295e",
+    "request_journal": "partial-010.json",
+    "generation_id": "gen-1790790298-n1KRJKZnAx6cLK0Y1axb",
+    "checked_at": "2026-09-30T18:14:34.513969+00:00",
+    "http_status": 200,
+    "receipt": {
+      "model": "qwen/qwen3.5-9b-20260310",
+      "cancelled": false,
+      "latency": 16168,
+      "generation_time": 299875,
+      "tokens_prompt": 6629,
+      "tokens_completion": 1610,
+      "native_tokens_prompt": 8804,
+      "native_tokens_completion": 6438,
+      "finish_reason": null,
+      "native_finish_reason": null,
+      "id": "gen-1790790298-n1KRJKZnAx6cLK0Y1axb",
+      "total_cost": 0.001827639,
+      "provider_name": "SiliconFlow"
+    }
+  },
+  {
+    "run_id": "30214f0cb99c4224b29985e53269295e",
+    "request_journal": "partial-034.json",
+    "generation_id": "gen-1790790876-95BvpiwAU2JsARaMyCx6",
+    "checked_at": "2026-09-30T18:14:34.849613+00:00",
+    "http_status": 200,
+    "receipt": {
+      "model": "qwen/qwen3.5-9b-20260310",
+      "cancelled": false,
+      "latency": 3720,
+      "generation_time": 299902,
+      "tokens_prompt": 16369,
+      "tokens_completion": 10039,
+      "native_tokens_prompt": 21841,
+      "native_tokens_completion": 8323,
+      "finish_reason": null,
+      "native_finish_reason": null,
+      "id": "gen-1790790876-95BvpiwAU2JsARaMyCx6",
+      "total_cost": 0.003398224,
+      "provider_name": "SiliconFlow"
+    }
+  },
+  {
+    "run_id": "30214f0cb99c4224b29985e53269295e",
+    "request_journal": "partial-057.json",
+    "generation_id": "gen-1790791820-uaYZbjjnEy6MdzEaELD9",
+    "checked_at": "2026-09-30T18:14:35.010032+00:00",
+    "http_status": 404,
+    "receipt": {}
+  }
+]

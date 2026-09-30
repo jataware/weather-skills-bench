@@ -43,3 +43,39 @@ def test_registered_ministral_settings_match_recovery():
     assert output_stem(new)=='ministral' and output_stem(base)=='e2e'
     assert new['models']==['mistralai/ministral-3b-2512']
     with pytest.raises(ValueError):output_stem({'output_stem':'../e2e'})
+
+
+def test_small_extension_preserves_transport_disclosure_and_exclusion():
+    base=study('base','m1');extension=study('new','m2')
+    for s in (base,extension):
+        s['config'].update(protocol_version='cached-heat-v4',exclusion_note='Astra helped author this benchmark.',json_mode=True)
+        s['catalog_overlay_sha256']='same-patch'
+    extension['config'].update(extends_study='base',model_json_mode={'m2':False},model_transport_note='m2 lacks JSON enforcement.')
+    view=comparison_views([base,extension])[0]
+    assert view['config']['model_json_mode']=={'m2':False}
+    assert view['config']['model_transport_note']=='m2 lacks JSON enforcement.'
+    assert 'Astra' in view['config']['exclusion_note']
+    extension['catalog_overlay_sha256']='different-patch'
+    with pytest.raises(ValueError):comparison_views([base,extension])
+
+
+def test_small_panel_keeps_task_and_budgets():
+    base=json.loads((ROOT/'configs/refined-heat-panel-v4.json').read_text())
+    small=json.loads((ROOT/'configs/refined-heat-small-v4.json').read_text())
+    assert {k:v for k,v in base.items() if k not in MODEL_OR_BATCH_KEYS}=={k:v for k,v in small.items() if k not in MODEL_OR_BATCH_KEYS}
+    assert not set(base['models'])&set(small['models'])
+    assert 'openai/gpt-6-astra' not in base['models']+small['models']
+
+
+def test_queued_extension_shows_pending_without_inventing_runs(tmp_path):
+    from weather_bench.comparison import queued_comparison_parts
+    (tmp_path/'configs').mkdir();(tmp_path/'results').mkdir()
+    base=study('base','m1');config=copy.deepcopy(base['config'])
+    config.update(models=['m2'],extends_study='base',output_stem='small',repetitions=1)
+    (tmp_path/'configs/small.json').write_text(json.dumps(config))
+    (tmp_path/'results/small-queue.json').write_text(json.dumps({'state':'waiting','config':'configs/small.json'}))
+    parts=queued_comparison_parts([base],tmp_path)
+    assert len(parts)==1 and parts[0]['runs']==[] and parts[0]['planned_runs']==2
+    assert parts[0]['ledger']['spent']==0 and parts[0]['health']['state']=='waiting'
+    recorded=copy.deepcopy(parts[0]);recorded['study_id']='actual'
+    assert queued_comparison_parts([base,recorded],tmp_path)==[]

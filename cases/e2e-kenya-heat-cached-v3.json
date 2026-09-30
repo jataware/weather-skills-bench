@@ -1,0 +1,64 @@
+{
+  "id": "e2e-kenya-heat-cached-v3",
+  "title": "Kenya heat outlook \u00b7 frozen real forecast",
+  "brief": "Prepare a two-week heat outlook from the 2026-09-27 ECMWF S2S issue. For each member and seven-day forecast period, consider the hottest daily regional-mean 2 m temperature (not daily maximum temperature and not the spatial mean of local peaks). Return period_end_lead_days=[7,14], median_peak_c, peak_spread_c (sample ddof=1), minimum_member_peak_c, maximum_member_peak_c, units='degree_Celsius', source_url, and figure. The figure should show median hottest-day temperature for both weeks with valid-period labels and Celsius units. The raw ECMWF archive is cached read-only at /inputs/archive.zarr. Inspect and process this local store; no network access is available. It is the unmodified daily_vars product for 2026-09-27. If using kenya-forecast-fetch, --source-store /inputs/archive.zarr selects this local source. Cite the original archive URL, not the cache path. Use the service rectangle 5N/34E/5S/42E, including boundary grid centres (this is a rectangular service area, not a country-polygon average). Regional means use cosine-latitude weights and equal longitude weights. Include the control and every perturbed member with equal member weight. Write a labelled briefing figure to /work/outlook.png and return figure='/work/outlook.png'. Cite the exact raw source store URL(s) in the requested answer fields. Output fields follow source latitude/longitude order. Week 1 covers lead days 1\u20137 inclusive (2026-09-28 through 2026-10-04); week 2 covers days 8\u201314 inclusive (2026-10-05 through 2026-10-11). Compute the spatial mean separately for each member and day, then each member\u2019s weekly maximum, then ensemble statistics. Include uncertainty in the figure. This describes a model forecast, not a verified outcome or heat-warning threshold.",
+  "inputs": [
+    "archive.zarr"
+  ],
+  "answer_schema": {
+    "period_end_lead_days": {
+      "type": "array",
+      "length": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "median_peak_c": {
+      "type": "array",
+      "length": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "peak_spread_c": {
+      "type": "array",
+      "length": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "minimum_member_peak_c": {
+      "type": "array",
+      "length": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "maximum_member_peak_c": {
+      "type": "array",
+      "length": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "units": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "figure": {
+      "type": "string"
+    }
+  },
+  "fixture_kind": "real archived forecast; verified local raw-data cache",
+  "tolerance": {
+    "atol": 0.0001,
+    "rtol": 1e-06
+  },
+  "suite": "cached-forecast-v3",
+  "source_notes": [
+    "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr",
+    "The local store is a byte-for-byte frozen raw archive, not a standardized skill output. Network access is disabled."
+  ]
+}

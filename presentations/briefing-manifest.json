@@ -1,0 +1,13 @@
+{
+  "file": "presentations/weather-agent-benchmark-briefing.pptx",
+  "slides": 9,
+  "snapshot": "2026-09-30 16:21 UTC",
+  "recorded_attempts": 7,
+  "planned_attempts": 30,
+  "native_diagrams": true,
+  "native_chart": true,
+  "raster_assets": [
+    "dashboard-comparison.png",
+    "dashboard-trace.png"
+  ]
+}

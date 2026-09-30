@@ -1,0 +1,638 @@
+{
+  "study_id": "20260930T155730Z-ae0a07",
+  "source_sha256": "2fac76f552627e8eb2bc6305040614ad10ccf17fdb96f9ce33f646b72cf19ef3",
+  "model": "qwen/qwen3.5-9b",
+  "case_id": "e2e-kenya-heat-cached-v3",
+  "scope": "Trace diagnosis of one attempt per condition; no causal estimate or rerun.",
+  "conditions": [
+    {
+      "run_id": "35b6222200ee49f8a7baf0fd3120ad56",
+      "arm": "python",
+      "status": "submitted",
+      "correctness": {
+        "passed": true,
+        "failures": []
+      },
+      "solve_seconds": 485.00906299997587,
+      "llm_seconds": 473.02114908525255,
+      "execution_seconds": 11.680751206818968,
+      "usage": {
+        "prompt_tokens": 162999,
+        "completion_tokens": 21116,
+        "total_tokens": 184115,
+        "reasoning_tokens": 1852,
+        "cached_tokens": 0,
+        "known_cost_usd": 0.02107512,
+        "cost_complete": true
+      },
+      "display_status": "submitted",
+      "action_counts": {
+        "python": 9
+      },
+      "failed_executions": 7,
+      "guide_reads": 0,
+      "skill_invocations": 0,
+      "returned_model_responses": 10,
+      "initial_prompt_tokens": 1229,
+      "providers": {
+        "Parasail": 9,
+        "DeepInfra": 1
+      },
+      "timeline": [
+        {
+          "turn": 1,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 0.9426676660077646,
+          "error": "IndexError: invalid index to scalar variable."
+        },
+        {
+          "turn": 2,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.1774299159878865,
+          "error": "AttributeError: 'numpy.ndarray' object has no attribute 'values'"
+        },
+        {
+          "turn": 3,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.0367139159934595,
+          "error": "AttributeError: 'numpy.ndarray' object has no attribute 'values'"
+        },
+        {
+          "turn": 4,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 0.9814396250294521,
+          "error": "ValueError: operands could not be broadcast together with shapes (101, 42, 8, 7) (8,)"
+        },
+        {
+          "turn": 5,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.0408599169459194,
+          "error": "xarray.structure.alignment.AlignmentError: cannot reindex or align along dimension 'longitude' because of conflicting dimension sizes: {1, 7} (note: an index is found along that dimension with size=7)"
+        },
+        {
+          "turn": 6,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 0.9870864580152556,
+          "error": "xarray.structure.alignment.AlignmentError: cannot reindex or align along dimension 'number' because of conflicting dimension sizes: {1, 101} (note: an index is found along that dimension with size=101)"
+        },
+        {
+          "turn": 7,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 0.9906252919463441,
+          "error": "IndexError: too many indices"
+        },
+        {
+          "turn": 8,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 2.142444208962843,
+          "error": null
+        },
+        {
+          "turn": 9,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 2.3814842079300433,
+          "error": null
+        }
+      ],
+      "findings": [
+        "Seven failed Python executions before a successful computation.",
+        "Turn 8 saved Kelvin-valued temperatures mislabeled degree_Celsius; turn 9 corrected the conversion and turn 10 submitted.",
+        "Final numerical answer and figure passed."
+      ]
+    },
+    {
+      "run_id": "e8cb022883c44f6fa4893c02686d77f1",
+      "arm": "skills_only",
+      "status": "token_budget",
+      "correctness": {
+        "passed": false,
+        "failures": [
+          "answer: expected exactly keys ['figure', 'maximum_member_peak_c', 'median_peak_c', 'minimum_member_peak_c', 'peak_spread_c', 'period_end_lead_days', 'source_url', 'units']",
+          "figure: required PNG delivery failed"
+        ]
+      },
+      "solve_seconds": 526.2534674580675,
+      "llm_seconds": 516.4908801261336,
+      "execution_seconds": 9.176597918150946,
+      "usage": {
+        "prompt_tokens": 187543,
+        "completion_tokens": 22821,
+        "total_tokens": 210364,
+        "reasoning_tokens": 24806,
+        "cached_tokens": 0,
+        "known_cost_usd": 0.024041605499999997,
+        "cost_complete": true
+      },
+      "display_status": "token_budget",
+      "action_counts": {
+        "protocol_error": 9,
+        "read_skill": 5,
+        "skill": 9
+      },
+      "failed_executions": 1,
+      "guide_reads": 5,
+      "skill_invocations": 9,
+      "returned_model_responses": 23,
+      "initial_prompt_tokens": 3285,
+      "providers": {
+        "DeepInfra": 8,
+        "Parasail": 15
+      },
+      "timeline": [
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Reply with one valid JSON action object"
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 4,
+          "action": "read_skill",
+          "skill": "inspect-zarr",
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.0,
+          "error": null
+        },
+        {
+          "turn": 5,
+          "action": "skill",
+          "skill": "inspect-zarr",
+          "args": [
+            "--input",
+            "/inputs/archive.zarr"
+          ],
+          "returncode": 0,
+          "seconds": 1.0866772499866784,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 7,
+          "action": "read_skill",
+          "skill": "unit-convert",
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.0,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 9,
+          "action": "read_skill",
+          "skill": "clip-region",
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.0,
+          "error": null
+        },
+        {
+          "turn": 10,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/inputs/archive.zarr",
+            "--bbox",
+            "5/34/-5/42",
+            "--output",
+            "/work/clipped.zarr"
+          ],
+          "returncode": 0,
+          "seconds": 1.1774097080342472,
+          "error": null
+        },
+        {
+          "turn": 11,
+          "action": "skill",
+          "skill": "inspect-zarr",
+          "args": [
+            "--input",
+            "/work/clipped.zarr"
+          ],
+          "returncode": 0,
+          "seconds": 0.9624148339498788,
+          "error": null
+        },
+        {
+          "turn": 12,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/clipped.zarr",
+            "--output",
+            "/work/clipped_celsius.zarr",
+            "--to-units",
+            "degree_Celsius",
+            "--variable",
+            "t2m"
+          ],
+          "returncode": 0,
+          "seconds": 1.2538964170962572,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": 14,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/clipped.zarr",
+            "--output",
+            "/work/clipped_celsius.zarr",
+            "--to-units",
+            "degree_Celsius",
+            "--variable",
+            "t2m"
+          ],
+          "returncode": 0,
+          "seconds": 0.06675420899409801,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 16,
+          "action": "read_skill",
+          "skill": "select",
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.0,
+          "error": null
+        },
+        {
+          "turn": 17,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/clipped_celsius.zarr",
+            "--output",
+            "/work/week1.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "0,1,2,3,4,5,6"
+          ],
+          "returncode": 2,
+          "seconds": 1.1901906250277534,
+          "error": "Error: --index '0,1,2,3,4,5,6' is not an integer"
+        },
+        {
+          "turn": 18,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/clipped_celsius.zarr",
+            "--output",
+            "/work/week1.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "0",
+            "--index",
+            "1",
+            "--index",
+            "2",
+            "--index",
+            "3",
+            "--index",
+            "4",
+            "--index",
+            "5",
+            "--index",
+            "6"
+          ],
+          "returncode": 0,
+          "seconds": 1.1347011249745265,
+          "error": null
+        },
+        {
+          "turn": 19,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/clipped_celsius.zarr",
+            "--output",
+            "/work/week2.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "7",
+            "--index",
+            "8",
+            "--index",
+            "9",
+            "--index",
+            "10",
+            "--index",
+            "11",
+            "--index",
+            "12",
+            "--index",
+            "13"
+          ],
+          "returncode": 0,
+          "seconds": 1.0867592500289902,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "turn": 21,
+          "action": "skill",
+          "skill": "inspect-zarr",
+          "args": [
+            "--input",
+            "/work/week2.zarr"
+          ],
+          "returncode": 0,
+          "seconds": 1.2177945000585169,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 0,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "turn": 23,
+          "action": "read_skill",
+          "skill": "aggregate-temporal",
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.0,
+          "error": null
+        }
+      ],
+      "findings": [
+        "Nine rejected or unusable actions: two wrong action names, five missing prior guide reads, two empty responses.",
+        "The one nonzero skill exit was invalid select --index comma-list syntax; repeated --index flags then correctly selected seven days.",
+        "Clipping and explicit temperature conversion completed successfully; no catalog runtime exception was observed.",
+        "Stopped after 23 responses, at 210364 provider-reported total tokens; the cumulative 200000-token ceiling is checked between calls.",
+        "Did not reach regional averaging or ensemble summaries."
+      ],
+      "empty_response_calls": [
+        {
+          "turn": 13,
+          "seconds": 131.71393191604875,
+          "completion_tokens": 8192,
+          "reported_reasoning_tokens": 10254,
+          "finish_reason": "length"
+        },
+        {
+          "turn": 20,
+          "seconds": 151.98756733397022,
+          "completion_tokens": 8192,
+          "reported_reasoning_tokens": 9774,
+          "finish_reason": "length"
+        }
+      ],
+      "usage_caveat": "For the two empty responses, provider-reported reasoning_tokens exceed completion_tokens. Preserve provider totals; do not claim an exact hidden-reasoning token count."
+    },
+    {
+      "run_id": "0de52fb9146e423fae3ef5dc1de716fd",
+      "arm": "skills",
+      "status": "api_error",
+      "correctness": {
+        "passed": false,
+        "failures": [
+          "answer: expected exactly keys ['figure', 'maximum_member_peak_c', 'median_peak_c', 'minimum_member_peak_c', 'peak_spread_c', 'period_end_lead_days', 'source_url', 'units']"
+        ]
+      },
+      "solve_seconds": 600.2752858749591,
+      "llm_seconds": 585.0900391651085,
+      "execution_seconds": 14.856092124944553,
+      "usage": {
+        "prompt_tokens": 127195,
+        "completion_tokens": 15142,
+        "total_tokens": 142337,
+        "reasoning_tokens": 2601,
+        "cached_tokens": 0,
+        "known_cost_usd": 0.015488846999999998,
+        "cost_complete": false,
+        "unconfirmed_token_reserve": 75938
+      },
+      "display_status": "task_timeout",
+      "action_counts": {
+        "python": 9,
+        "api_error": 1
+      },
+      "failed_executions": 4,
+      "guide_reads": 0,
+      "skill_invocations": 0,
+      "returned_model_responses": 9,
+      "initial_prompt_tokens": 3405,
+      "providers": {
+        "DeepInfra": 6,
+        "Parasail": 3
+      },
+      "timeline": [
+        {
+          "turn": 1,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.1554660419933498,
+          "error": "IndexError: invalid index to scalar variable."
+        },
+        {
+          "turn": 2,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.9631044160341844,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.1291631660424173,
+          "error": "ValueError: Dimensions {'valid_time'} do not exist. Expected one or more of ('number', 'step', 'latitude', 'longitude')"
+        },
+        {
+          "turn": 4,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 1.0727266250178218,
+          "error": "IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (7,) (6,) "
+        },
+        {
+          "turn": 5,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 1,
+          "seconds": 0.9995369589887559,
+          "error": "ValueError: operands could not be broadcast together with shapes (7,6) (7,) "
+        },
+        {
+          "turn": 6,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 3.837137166992761,
+          "error": null
+        },
+        {
+          "turn": 7,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.9307718329364434,
+          "error": null
+        },
+        {
+          "turn": 8,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 3.9136727919103578,
+          "error": null
+        },
+        {
+          "turn": 9,
+          "action": "python",
+          "skill": null,
+          "args": null,
+          "returncode": 0,
+          "seconds": 0.8545131250284612,
+          "error": null
+        },
+        {
+          "turn": null,
+          "action": "api_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "seconds": 92.81508824997582,
+          "error": "ReadTimeout"
+        }
+      ],
+      "findings": [
+        "Zero guide reads and zero skill calls: this attempt used Python for every execution.",
+        "Four Python exceptions: scalar coordinate indexing, nonexistent valid_time dimension, incompatible indexing shapes, and broadcasting.",
+        "Turn 6 and turn 8 ran but summed over six longitudes without dividing by six. Printed weekly medians were 1526.166359 and 1521.550159 Celsius.",
+        "Wrote results.json and a PNG, but did not produce the required answer.json before the 600-second task deadline.",
+        "585.1 of 600.3 seconds were model/API time. A ReadTimeout at the remaining task deadline is displayed as task_timeout."
+      ]
+    }
+  ],
+  "interpretation": [
+    "The hybrid failure is not evidence that executing skills made calculations worse; no skills were executed.",
+    "The strict skills failure is dominated by action-protocol compliance, guide-read overhead, empty output, and cumulative context cost.",
+    "Python-only success shows recovery in this one trajectory, not robust superiority: it needed nine executions and 485 seconds.",
+    "Skill availability changes the prompt; provider routing and execution trajectories also differed. Repeated matched runs are needed for a causal claim."
+  ],
+  "targeted_followups": [
+    "Separate schema, guide precondition, CLI-argument, library-runtime, numerical, output-contract, token-budget, and task-timeout failures.",
+    "In a versioned follow-up, use structured action validation or normalize unambiguous skill-name actions; measure its effect separately.",
+    "Investigate empty-action length finishes and reasoning configuration without increasing only one condition's budget.",
+    "Use concise discovery and targeted guide sections; retain read and call telemetry.",
+    "Repeat paired attempts with controlled provider routing and identical per-attempt limits; do not change prior scores."
+  ]
+}

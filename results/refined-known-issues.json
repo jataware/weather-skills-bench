@@ -1,0 +1,45 @@
+{
+  "study_id": "20260930T151924Z-3a0c3f",
+  "issues": [
+    {
+      "run_id": "760f7d75682d42228e459e380e042b33",
+      "skill": "aggregate-temporal",
+      "args": [
+        "--input",
+        "/work/regional.zarr",
+        "--output",
+        "/work/rolling.zarr",
+        "--window",
+        "7",
+        "--align",
+        "right",
+        "--method",
+        "max"
+      ],
+      "error": "pint.errors.DimensionalityError: Cannot convert from 'dimensionless' to 'degree_Celsius'",
+      "scope": "Rolling max over quantified Celsius in the pinned aggregate-temporal path. The new weighted-mean, explicit unit-conversion and clipping fixes do not cover this separate path.",
+      "recovery": "The agent switched to --period weekly --method max, selected leads 7 and 14, and passed. The canonical reference also uses weekly periods.",
+      "status": "Fix independently validated; not applied to completed v3 cohort",
+      "patch": "patches/rolling-temperature-followup.patch"
+    },
+    {
+      "run_id": "2b6adec0f3424cc4994a70e21fdfbbc4",
+      "skill": "summarize-dim",
+      "args": [
+        "--input",
+        "/work/w1_max_per_member.zarr",
+        "--output",
+        "/work/w1_median.zarr",
+        "--dim",
+        "number",
+        "--method",
+        "median"
+      ],
+      "error": "NotImplementedError: The da.nanmedian function only works along an axis or a subset of axes.  The full algorithm is difficult to do in parallel",
+      "scope": "Pint hides underlying Dask chunks from the full-axis median materialization guard.",
+      "status": "Fix independently validated; not applied to completed v3 cohort",
+      "patch": "patches/rolling-temperature-followup.patch"
+    }
+  ],
+  "validation": "results/rolling-followup-validation.json"
+}

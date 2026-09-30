@@ -1,0 +1,15 @@
+{
+  "study_id": "20260930T151924Z-3a0c3f",
+  "recorded_attempts": 9,
+  "partial_trace_runs": [],
+  "passed": true,
+  "checks": [
+    "Unique isolated run IDs and task/model/condition cells",
+    "Fixture hashes match independent manifest",
+    "Saved answers independently regraded",
+    "Token and known cost totals reconcile to returned requests",
+    "Skills-only has no Python service or model code actions",
+    "Every recorded skill call follows an earlier recorded guide-read turn",
+    "Python baseline has no skills service"
+  ]
+}

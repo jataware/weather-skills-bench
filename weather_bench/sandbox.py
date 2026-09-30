@@ -57,6 +57,8 @@ class Sandbox:
         run_gid=os.getgid() if os.getuid() else 65534
         if not os.getuid(): self.work.chmod(0o777)
         self.catalog=catalog; self.containers={}; self.image_ids={}; self.skills_only=skills_only
+        from .execution_cache import ExecutionCache
+        self.execution_cache=ExecutionCache(self.inputs,self.work) if runtime.get('memoize_skills') else None
         try:
             for kind in (["skills"] if skills_only else ["python","skills"] if skills else ["python"]):
                 tag=f"weather-bench-{kind}:"+runtime.get('tag','v1')
@@ -92,10 +94,16 @@ class Sandbox:
             command=["python","/catalog/"+inventory(self.catalog)[name]["scripts"][0],*action["args"]]
         else:
             raise ValueError("Expected python or skill")
+        cache_key=self.execution_cache.key(action,self.image_ids[target]) if self.execution_cache and kind=='skill' else None
+        cached=self.execution_cache.get(cache_key) if self.execution_cache else None
+        if cached:
+            return {**cached,'seconds':time.monotonic()-started}
         try:
             proc=subprocess.run(["docker","exec",self.containers[target],*command],capture_output=True,text=True,timeout=timeout)
-            return {"returncode":proc.returncode,"stdout":proc.stdout[:16000],"stderr":proc.stderr[-8000:],
+            result={"returncode":proc.returncode,"stdout":proc.stdout[:16000],"stderr":proc.stderr[-8000:],
                     "seconds":time.monotonic()-started}
+            if self.execution_cache:self.execution_cache.put(cache_key,result)
+            return result
         except subprocess.TimeoutExpired:
             # Killing docker exec alone leaves the code running. Stop the container.
             subprocess.run(["docker","kill",self.containers[target]],capture_output=True,timeout=15)

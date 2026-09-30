@@ -4499,6 +4499,7 @@
     }
   ],
   "catalog_commit": "1a0af7de3bba2d7a6c4fe67f291eb0e58640b5f5",
+  "catalog_overlay_sha256": null,
   "ledger": {
     "spent": 0.30082384530000006,
     "uncertain_cost": false
@@ -4507,6 +4508,7 @@
   "resume_note": null,
   "diagnostics": {
     "provider_failures": 0,
+    "archived_interruptions": 0,
     "interruption": null,
     "excluded_models": {},
     "supplementary_runs": 0

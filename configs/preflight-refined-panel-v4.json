@@ -1,0 +1,140 @@
+[
+  {
+    "model": "anthropic/claude-fable-5.1",
+    "arm": "python",
+    "providers": [
+      "anthropic"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "anthropic/claude-fable-5.1",
+    "arm": "skills_only",
+    "providers": [
+      "anthropic"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "anthropic/claude-sonnet-5.5",
+    "arm": "python",
+    "providers": [
+      "anthropic"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "anthropic/claude-sonnet-5.5",
+    "arm": "skills_only",
+    "providers": [
+      "anthropic"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "google/gemini-3.1-flash-lite",
+    "arm": "python",
+    "providers": [
+      "google-ai-studio",
+      "google-vertex/global"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "google/gemini-3.1-flash-lite",
+    "arm": "skills_only",
+    "providers": [
+      "google-ai-studio",
+      "google-vertex/global"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "deepseek/deepseek-v4.1-flash",
+    "arm": "python",
+    "providers": [
+      "wafer",
+      "novita/fp8"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "deepseek/deepseek-v4.1-flash",
+    "arm": "skills_only",
+    "providers": [
+      "wafer",
+      "novita/fp8"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "qwen/qwen3.5-9b",
+    "arm": "python",
+    "providers": [
+      "deepinfra/bf16",
+      "parasail/bf16"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "qwen/qwen3.5-9b",
+    "arm": "skills_only",
+    "providers": [
+      "deepinfra/bf16",
+      "parasail/bf16"
+    ],
+    "json_mode": true,
+    "reasoning": true,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "mistralai/ministral-3b-2512",
+    "arm": "python",
+    "providers": [
+      "mistral/zdr"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "mistralai/ministral-3b-2512",
+    "arm": "skills_only",
+    "providers": [
+      "mistral/zdr"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  }
+]

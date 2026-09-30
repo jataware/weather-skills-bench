@@ -1,0 +1,91 @@
+{
+  "study_id": "20260930T173741Z-820084",
+  "state": "Complete",
+  "recorded_attempts": 3,
+  "planned_attempts": 3,
+  "condition_statistics": [
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "python",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 131.57872216706164,
+      "mean_tokens": 46943,
+      "known_cost_usd": 0.0050084595,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0050084595,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 201.7752917499747,
+      "mean_tokens": 118891,
+      "known_cost_usd": 0.0121976415,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0121976415,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 1
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills_only",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 1800.23389112507,
+      "mean_tokens": 1023710,
+      "known_cost_usd": 0.10267027649999999,
+      "cost_complete": false,
+      "cost_per_attempt_usd": null,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 11,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 1
+    }
+  ],
+  "paired_statistics": [
+    {
+      "model": "qwen/qwen3.5-9b",
+      "pairs": 1,
+      "tasks": 1,
+      "excluded_provider_pairs": 0,
+      "skills_only_wins": 0,
+      "python_only_wins": 0,
+      "both_pass": 0,
+      "both_fail": 1,
+      "success_difference": 0.0,
+      "task_bootstrap_95": null,
+      "mcnemar_exact_p": 1.0,
+      "inference_note": "Exploratory; tasks are a fixed diagnostic set. Bootstrap resamples whole task effects and is omitted at degenerate boundaries. McNemar is omitted when fixtures repeat.",
+      "mcnemar_holm_p": 1
+    }
+  ]
+}

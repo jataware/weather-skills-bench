@@ -7743,6 +7743,7 @@
     }
   ],
   "catalog_commit": "1a0af7de3bba2d7a6c4fe67f291eb0e58640b5f5",
+  "catalog_overlay_sha256": null,
   "ledger": {
     "spent": 1.3994370096300008,
     "uncertain_cost": true,
@@ -7769,6 +7770,7 @@
   "resume_note": "Completed and interrupted attempts retained without reruns. Transport now enforces total request deadlines; unconfirmed charges remain unknown and receive a conservative spend reserve. Prompts, task data, model routes and scoring are unchanged.",
   "diagnostics": {
     "provider_failures": 0,
+    "archived_interruptions": 0,
     "interruption": null,
     "excluded_models": {},
     "supplementary_runs": 0

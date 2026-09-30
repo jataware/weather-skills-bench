@@ -1,0 +1,10 @@
+{
+  "exported_at": "2026-09-30T16:21:04.374838+00:00",
+  "study_id": "comparison-20260930T155730Z-ae0a07",
+  "run_id": "95fdd288dfc945299b383fb23bf50f48",
+  "selected_model": "anthropic/claude-fable-5.1",
+  "chart_metric": "latency",
+  "recorded_attempts": 7,
+  "planned_attempts": 30,
+  "note": "Actual dashboard UI, frozen at export. Model filter is an interface illustration, not a ranking."
+}

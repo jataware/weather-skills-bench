@@ -9488,11 +9488,11 @@
       },
       "original_status": "api_error",
       "failure_detail": {
-        "category": "timeout",
-        "title": "Request timeout",
-        "provider": "DeepInfra",
-        "code": "ReadTimeout",
-        "message": "ReadTimeout"
+        "category": "task_budget",
+        "title": "Task time limit exhausted",
+        "provider": null,
+        "code": "task_timeout",
+        "message": "The shared task deadline was exhausted. This is a task outcome, including time spent generating responses and executing actions."
       },
       "trace": [
         {
@@ -19005,11 +19005,11 @@
       },
       "original_status": "api_error",
       "failure_detail": {
-        "category": "timeout",
-        "title": "Request timeout",
-        "provider": "DeepInfra",
-        "code": "ReadTimeout",
-        "message": "ReadTimeout"
+        "category": "task_budget",
+        "title": "Task time limit exhausted",
+        "provider": null,
+        "code": "task_timeout",
+        "message": "The shared task deadline was exhausted. This is a task outcome, including time spent generating responses and executing actions."
       },
       "trace": [
         {
@@ -40197,6 +40197,7 @@
     }
   ],
   "catalog_commit": "1a0af7de3bba2d7a6c4fe67f291eb0e58640b5f5",
+  "catalog_overlay_sha256": null,
   "ledger": {
     "spent": 10.898475722640015,
     "uncertain_cost": false,
@@ -40252,7 +40253,8 @@
   "resumed_from": "20260929T185719Z-dd87d5",
   "resume_note": "Substantive attempts retained. Endpoint-parameter rejections and interruptions before any model response/action are archived as infrastructure; untouched tasks are scheduled again. Scientific prompts, fixtures and grading are unchanged.",
   "diagnostics": {
-    "provider_failures": 3,
+    "provider_failures": 2,
+    "archived_interruptions": 1,
     "interruption": null,
     "excluded_models": {},
     "supplementary_runs": 0

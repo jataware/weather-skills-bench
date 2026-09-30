@@ -20,17 +20,17 @@ def refresh(path):
     n=len(study['runs']);finished=bool(study.get('finished_at'))
     state='Complete' if finished and n==study['planned_runs'] else 'Partial — stopped' if finished else study.get('health',{}).get('state','stopped').title()
     lines=['# '+('End-to-end real-forecast study' if e2e else 'Small-model comparison' if small else 'Expanded skills-only study'), '',f"**{state}: {n}/{study['planned_runs']} recorded attempts.** Study `{study['study_id']}`.",'',
-           f"{len(study['config']['models'])} models, {len(study['config']['cases'])} fixed diagnostic tasks, skills-only versus No Skills (Python with execution feedback), one repetition. One-shot is absent. Operator interruptions are unscored; provider errors remain in operational success rates. Matched capability tests exclude provider errors and interruptions.", '',
+           f"{len(study['config']['models'])} models, {len(study['config']['cases'])} fixed diagnostic tasks, skills-only versus Python only (Python with execution feedback), one repetition. One-shot is absent. Operator interruptions are unscored; provider errors remain in operational success rates. Matched capability tests exclude provider errors and interruptions.", '',
            '| Model | Condition | Passed / scored | Median seconds | Mean tokens | USD / attempt | USD / success | Provider errors |',
            '|---|---|---:|---:|---:|---:|---:|---:|']
     def money(value):return 'Unknown' if value is None else f'${value:.4f}'
     for row in study['condition_statistics']:
         name=MODEL_PROFILES.get(row['model'],{}).get('label',row['model'])
-        arm='Skills only' if row['arm']=='skills_only' else 'No Skills'
+        arm={'skills_only':'Skills only','skills':'Python + skills','python':'Python only'}.get(row['arm'],row['arm'])
         per_success='—' if not row['passed'] else money(row['cost_per_success_usd'])
         lines.append(f"| {name} | {arm} | {row['passed']}/{row['scored']} | {row['median_seconds']:.1f} | {row['mean_tokens']:,.0f} | {money(row['cost_per_attempt_usd'])} | {per_success} | {row['provider_errors']} |")
     lines+=['',f"Reported study charges: **${study['ledger']['spent']:.4f}**. Unconfirmed charges are additional; the ${study['ledger'].get('budget_reserve_usd',0):.4f} reserve is a budget precaution, not billed spend. Preflight charges are recorded separately in `results/preflight-v2.json`.",'',
-            '## Paired comparisons','', '| Model | Evaluable pairs | Skills wins | No Skills wins | Exact McNemar p | Holm-adjusted p |', '|---|---:|---:|---:|---:|---:|']
+            '## Paired comparisons','', '| Model | Evaluable pairs | Skills wins | Python only wins | Exact McNemar p | Holm-adjusted p |', '|---|---:|---:|---:|---:|---:|']
     def pvalue(value):return '—' if value is None else f'{value:.4f}'
     for row in study['paired_statistics']:
         name=MODEL_PROFILES.get(row['model'],{}).get('label',row['model'])
@@ -50,6 +50,12 @@ def refresh(path):
             lines[2:2]=['**Provisional:** '+study['quality']['note'], '', 'See END_TO_END.md and results/rainfall-semantics-audit.json for the independent sensitivity check. Registered scores are unchanged.', '']
         lines=[line.replace('fixed diagnostic tasks','real-forecast end-to-end tasks').replace('synthetic task set','archived real-forecast task set') for line in lines]
         lines+=['', 'Live forecast retrieval and plotting are included in completion time. Source versions are checked before and after each attempt. Heat task has a documented catalog reference defect; a correct alternative remains eligible. See END_TO_END.md.']
+    if study['config'].get('protocol_version') in ('cached-heat-v3','cached-heat-v4'):
+        lines=[line.replace('skills-only versus Python only (Python with execution feedback)', 'Python + skills versus Python only (main comparison), plus Skills only (diagnostic)').replace('Live forecast retrieval and plotting are included in completion time. Source versions are checked before and after each attempt. Heat task has a documented catalog reference defect; a correct alternative remains eligible. See END_TO_END.md.', 'Raw forecast bytes are served from a verified read-only local cache. Plotting is timed; download and setup are excluded. Catalog defects are patched in a separate version. Agents share no intermediate artifacts. See configs/refined-heat-v3.json.') for line in lines]
+    if study['config'].get('model_transport_note'):
+        lines += ['',study['config']['model_transport_note']]
+    if study['config'].get('exclusion_note'):
+        lines[4:4]=[study['config']['exclusion_note'],'']
     if small:
         lines=[line.replace('results/preflight-v2.json','results/preflight-small-models.json') for line in lines]
     if study['config'].get('preflight_report'):

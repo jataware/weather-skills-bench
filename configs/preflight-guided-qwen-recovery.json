@@ -1,0 +1,24 @@
+[
+  {
+    "model": "qwen/qwen3.5-9b",
+    "providers": [
+      "siliconflow/fp8"
+    ],
+    "arm": "skills",
+    "json_mode": true,
+    "stream": true,
+    "reasoning": true,
+    "turns": 2
+  },
+  {
+    "model": "qwen/qwen3.5-9b",
+    "providers": [
+      "venice/fp8"
+    ],
+    "arm": "skills",
+    "json_mode": true,
+    "stream": true,
+    "reasoning": true,
+    "turns": 2
+  }
+]

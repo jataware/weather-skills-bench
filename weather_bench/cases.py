@@ -85,7 +85,7 @@ def step(id, skill, inputs, output, *args):
     return {"id": id, "skill": skill, "inputs": inputs.split(), "output": output, "args": list(args)}
 
 
-def cases():
+def cases(include_refined=False):
     result = []
     lat = [0., 30., 60.]
     lon = [30., 31., 32.]
@@ -207,7 +207,8 @@ def cases():
         [step("weighted","aggregate-temporal","irregular","weekly","--period","weekly"),step("totals","convert-to-totals","weekly","answer","--variable","precip")],
         {"dates":("answer","@dates:time"),"totals_mm":("answer","precip"),"units":"mm"},[("weighted","totals")],("deaccumulate",)))
     from .e2e_cases import e2e_cases
-    return result + e2e_cases()
+    from .refined import case as refined_case
+    return result + e2e_cases() + ([refined_case()] if include_refined else [])
 
 
 def write_inputs(case, destination):

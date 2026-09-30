@@ -1,0 +1,109 @@
+{
+  "checked_at": "2026-09-30T18:16:01.322409+00:00",
+  "original_study": "20260930T170131Z-423336",
+  "recovery_study": "20260930T173741Z-820084",
+  "original_failures": [
+    {
+      "run_id": "96ab989cf512409784a5b6b4cd81fff0",
+      "model": "qwen/qwen3.5-9b",
+      "arm": "python",
+      "diagnosis": {
+        "category": "overload",
+        "title": "Provider capacity overload",
+        "provider": "DeepInfra",
+        "code": "engine_overloaded",
+        "message": "429 \u00b7 Provider returned error \u00b7 DeepInfra \u00b7 engine_overloaded \u00b7 upstream_provider_shared_pool"
+      },
+      "api_error_events": 4
+    },
+    {
+      "run_id": "9152b392161845c1a125f32a401a7559",
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills_only",
+      "diagnosis": {
+        "category": "overload",
+        "title": "Provider capacity overload",
+        "provider": "DeepInfra",
+        "code": "engine_overloaded",
+        "message": "429 \u00b7 Provider returned error \u00b7 DeepInfra \u00b7 engine_overloaded \u00b7 upstream_provider_shared_pool"
+      },
+      "api_error_events": 3
+    },
+    {
+      "run_id": "d8c9e21203a24ea394a3547c56aff7bd",
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "diagnosis": {
+        "category": "overload",
+        "title": "Provider capacity overload",
+        "provider": "DeepInfra",
+        "code": "engine_overloaded",
+        "message": "429 \u00b7 Provider returned error \u00b7 DeepInfra \u00b7 engine_overloaded \u00b7 upstream_provider_shared_pool"
+      },
+      "api_error_events": 3
+    }
+  ],
+  "route_checks": {
+    "passed": true,
+    "requests": 4,
+    "reported_usd": 0.0012625470000000001
+  },
+  "route_change": {
+    "from": [
+      "deepinfra/bf16",
+      "parasail/bf16"
+    ],
+    "to": [
+      "siliconflow/fp8",
+      "venice/fp8"
+    ],
+    "note": "Provider and quantization changed; original task outcomes are retained, not rerun."
+  },
+  "recovery_outcomes": [
+    {
+      "run_id": "00a3710ecfbf44a2a08fe894f6a23d80",
+      "arm": "python",
+      "status": "submitted",
+      "raw_status": "submitted",
+      "passed": false,
+      "reported_usd": 0.0050084595,
+      "seconds": 131.57872216706164,
+      "tokens_returned": 46943,
+      "provider_timeout_events": 0
+    },
+    {
+      "run_id": "9e51fe9dcf2d4301aa211ff80690256c",
+      "arm": "skills",
+      "status": "submitted",
+      "raw_status": "submitted",
+      "passed": false,
+      "reported_usd": 0.0121976415,
+      "seconds": 201.7752917499747,
+      "tokens_returned": 118891,
+      "provider_timeout_events": 0
+    },
+    {
+      "run_id": "30214f0cb99c4224b29985e53269295e",
+      "arm": "skills_only",
+      "status": "task_timeout",
+      "raw_status": "api_error",
+      "passed": false,
+      "reported_usd": 0.10267027649999999,
+      "seconds": 1800.23389112507,
+      "tokens_returned": 1023710,
+      "provider_timeout_events": 3
+    }
+  ],
+  "complete": true,
+  "notes": [
+    "Python only used the full archive grid without clipping to the requested rectangle.",
+    "Python + skills clipped correctly but computed cosine-latitude weights without applying them in its Python mean.",
+    "Skills only exhausted 30 minutes without an answer or PNG after 55 returned responses, 36 skill invocations, 11 protocol rejections, two recovered 300-second timeouts, and one final 178-second request that reached the remaining task deadline. It is classified as task_timeout, not evidence that transport was error-free."
+  ],
+  "late_receipt_charges_usd": 0.005225863,
+  "synthetic_probe_usd": 0.0015100965,
+  "reported_total_including_probes_and_late_receipts_usd": 1.448068801900001,
+  "billing_complete": false,
+  "billing_note": "Two timeout receipts supplement returned-response charges. The final timeout generation receipt is unavailable (HTTP 404); its charge remains unknown. Source runs and budget reservations are unchanged.",
+  "timeout_billing_receipts": "results/guided-qwen-timeout-billing-receipts.json"
+}

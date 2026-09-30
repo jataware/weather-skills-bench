@@ -1,33 +1,33 @@
 {
   "study_id": "20260930T133554Z-9c118f",
-  "state": "Running",
-  "recorded_attempts": 6,
+  "state": "Complete",
+  "recorded_attempts": 15,
   "planned_attempts": 15,
   "condition_statistics": [
     {
-      "model": "deepseek/deepseek-v4.1-flash",
-      "arm": "skills_only",
+      "model": "anthropic/claude-fable-5.1",
+      "arm": "python",
       "recorded": 1,
       "scored": 1,
-      "passed": 0,
-      "success_rate": 0.0,
+      "passed": 1,
+      "success_rate": 1.0,
       "wilson_95": [
-        0,
-        0.7934506856227626
+        0.20654931437723745,
+        1
       ],
-      "median_seconds": 158.16962295898702,
-      "mean_tokens": 365418,
-      "known_cost_usd": 0.0350473068,
+      "median_seconds": 41.70602454210166,
+      "mean_tokens": 19306,
+      "known_cost_usd": 0.2666466,
       "cost_complete": true,
-      "cost_per_attempt_usd": 0.0350473068,
-      "cost_per_success_usd": null,
+      "cost_per_attempt_usd": 0.2666466,
+      "cost_per_success_usd": 0.2666466,
       "provider_errors": 0,
-      "protocol_rejections": 1,
-      "runs_using_skills": 1,
-      "runs_reading_guides": 1
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
     },
     {
-      "model": "mistralai/ministral-3b-2512",
+      "model": "deepseek/deepseek-v4.1-flash",
       "arm": "skills_only",
       "recorded": 2,
       "scored": 2,
@@ -37,16 +37,82 @@
         0,
         0.6576197724933469
       ],
-      "median_seconds": 53.361502562474925,
-      "mean_tokens": 360819.5,
-      "known_cost_usd": 0.0110834262,
+      "median_seconds": 599.546193999995,
+      "mean_tokens": 363328.5,
+      "known_cost_usd": 0.07642387427399999,
       "cost_complete": true,
-      "cost_per_attempt_usd": 0.0055417131,
+      "cost_per_attempt_usd": 0.038211937136999996,
       "cost_per_success_usd": null,
       "provider_errors": 0,
-      "protocol_rejections": 19,
+      "protocol_rejections": 5,
       "runs_using_skills": 2,
       "runs_reading_guides": 2
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "python",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 54.37279083405156,
+      "mean_tokens": 64888,
+      "known_cost_usd": 0.02577457575,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.02577457575,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 1,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "python",
+      "recorded": 2,
+      "scored": 2,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.6576197724933469
+      ],
+      "median_seconds": 106.74829979200149,
+      "mean_tokens": 124658.5,
+      "known_cost_usd": 0.0055157652,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0027578826,
+      "cost_per_success_usd": null,
+      "provider_errors": 1,
+      "protocol_rejections": 1,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "skills_only",
+      "recorded": 3,
+      "scored": 3,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        5.551115123125783e-17,
+        0.5614970317550454
+      ],
+      "median_seconds": 62.86828437494114,
+      "mean_tokens": 364034,
+      "known_cost_usd": 0.017396121599999998,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.005798707199999999,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 24,
+      "runs_using_skills": 3,
+      "runs_reading_guides": 3
     },
     {
       "model": "openai/gpt-6-astra",
@@ -72,26 +138,64 @@
     },
     {
       "model": "qwen/qwen3.5-9b",
-      "arm": "skills_only",
-      "recorded": 1,
-      "scored": 1,
+      "arm": "python",
+      "recorded": 2,
+      "scored": 2,
       "passed": 0,
       "success_rate": 0.0,
       "wilson_95": [
         0,
-        0.7934506856227626
+        0.6576197724933469
       ],
-      "median_seconds": 1200.2657111670123,
-      "mean_tokens": 46259,
-      "known_cost_usd": 0.005409954,
+      "median_seconds": 245.29118183348328,
+      "mean_tokens": 30197,
+      "known_cost_usd": 0.0067495725,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.00337478625,
+      "cost_per_success_usd": null,
+      "provider_errors": 2,
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills_only",
+      "recorded": 2,
+      "scored": 2,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.6576197724933469
+      ],
+      "median_seconds": 1200.268866917002,
+      "mean_tokens": 172760.5,
+      "known_cost_usd": 0.0360968355,
       "cost_complete": false,
       "cost_per_attempt_usd": null,
       "cost_per_success_usd": null,
       "provider_errors": 0,
-      "protocol_rejections": 2,
-      "runs_using_skills": 0,
-      "runs_reading_guides": 1
+      "protocol_rejections": 5,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 2
     }
   ],
-  "paired_statistics": []
+  "paired_statistics": [
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "pairs": 1,
+      "tasks": 1,
+      "excluded_provider_pairs": 1,
+      "skills_only_wins": 0,
+      "python_only_wins": 0,
+      "both_pass": 0,
+      "both_fail": 1,
+      "success_difference": 0.0,
+      "task_bootstrap_95": null,
+      "mcnemar_exact_p": 1.0,
+      "inference_note": "Exploratory; tasks are a fixed diagnostic set. Bootstrap resamples whole task effects and is omitted at degenerate boundaries. McNemar is omitted when fixtures repeat.",
+      "mcnemar_holm_p": 1
+    }
+  ]
 }

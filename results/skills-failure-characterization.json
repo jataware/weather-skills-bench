@@ -1,0 +1,1258 @@
+{
+  "study_id": "repaired-20260930T133554Z-9c118f",
+  "snapshot_sha256": "c823f3eaf2f3b0cbe9da29563b688612528a2f1a5d86d4a4b7b3f053674d970d",
+  "scope": "Fixed interim snapshot; original non-provider outcomes plus designated completed replacements. Later retries are not included.",
+  "completed_skills_only": 15,
+  "skills_passes": 6,
+  "skills_failures": 9,
+  "primary_group_counts": {
+    "temperature_units": 3,
+    "zarr_chunk_serialization": 2,
+    "response_generation": 1,
+    "workflow_state": 1,
+    "parameterization_and_semantics": 2
+  },
+  "failed_runs_encountering_catalog_defects": 5,
+  "stopping_conditions": {
+    "token_budget": 8,
+    "task_timeout": 1
+  },
+  "input_share_of_reported_tokens_in_token_budget_failures": 0.9371269573523565,
+  "guide_order_rejections_in_failed_runs": 27,
+  "failed_runs_with_guide_order_rejections": 8,
+  "successful_recovery_control": {
+    "run_id": "4975dc8334644b048c4cd0c3d97027f6",
+    "model": "openai/gpt-6-astra",
+    "case_id": "e2e-kenya-heat",
+    "observation": "Encounters the temperature and conversion errors, then computes a weighted temperature anomaly and restores the base temperature using difference skills; completes and passes without model-written code."
+  },
+  "limitations": [
+    "Retrospective trace characterization, not a causal ablation. A run can have several contributing errors; the assigned primary group is a manual summary.",
+    "Encountering a defect does not prove it was the sole cause of failure or that Python permission would have produced a pass.",
+    "The prompt already warns that explicit unit-convert --to-units is broken at the catalog pin. Repeated use also reflects missed instructions; --to-standard does not repair weighted Celsius reduction.",
+    "Some recovery paths execute successfully but their intermediate numerical values were not independently regraded.",
+    "Both arms consume cumulative input and output tokens. Repeated history, documentation, inspection and errors raise input charges; this is not a per-context-window limit.",
+    "The existing comparison changes both skill access and permission to write code. It does not isolate the effect of adding skills to a coding-capable agent."
+  ],
+  "runs": [
+    {
+      "run_id": "0ef149847cc9483d84bab42bba76d5c4",
+      "model": "google/gemini-3.1-flash-lite",
+      "case_id": "e2e-kenya-heat",
+      "status": "token_budget",
+      "primary_observed_failure_group": "temperature_units",
+      "observation": "Weighted Celsius reduction raises OffsetUnitCalculusError; explicit Kelvin conversion also fails. Repeats conversions and then attempts unsupported literal numeric submission.",
+      "recovery_observed": "No completed recovery observed.",
+      "input_tokens": 319604,
+      "output_tokens": 43082,
+      "skill_calls_failed": 5,
+      "guide_order_rejections": 4,
+      "matched_no_skills": {
+        "run_id": "8ce7a589d5724a1a88ac5329a8b4db05",
+        "passed": true,
+        "status": "submitted"
+      },
+      "evidence": [
+        {
+          "event_index_zero_based": 0,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 3,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 6,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 10,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/t2m.zarr",
+            "--output",
+            "/work/daily_regional_mean.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 11,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 12,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 14,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/t2m.zarr",
+            "--output",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 17,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/t2m_std.zarr",
+            "--output",
+            "/work/daily_regional_mean.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 18,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/t2m.zarr",
+            "--output",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 20,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "--input",
+            "/work/t2m_std.zarr",
+            "--output",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 21,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "event_index_zero_based": 23,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "event_index_zero_based": 24,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Each numeric/array field must reference a skill-produced artifact"
+        },
+        {
+          "event_index_zero_based": 25,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Each numeric/array field must reference a skill-produced artifact"
+        }
+      ]
+    },
+    {
+      "run_id": "bceec1d07ea64549bcb86fcc335bc75e",
+      "model": "qwen/qwen3.5-9b",
+      "case_id": "e2e-kenya-revision",
+      "status": "token_budget",
+      "primary_observed_failure_group": "zarr_chunk_serialization",
+      "observation": "Valid bounding-box clipping fails during output serialization because of incompatible Dask/Zarr chunks; six repeated clipping failures.",
+      "recovery_observed": "Eventually fetches the requested bounding box directly and proceeds; later uses unsupported select --variable and exhausts token budget. Also invokes an unavailable geocoder earlier.",
+      "input_tokens": 342294,
+      "output_tokens": 11320,
+      "skill_calls_failed": 8,
+      "guide_order_rejections": 1,
+      "matched_no_skills": null,
+      "evidence": [
+        {
+          "event_index_zero_based": 12,
+          "action": "skill",
+          "skill": "resolve-region",
+          "args": [
+            "5N/34E/5S/42E"
+          ],
+          "returncode": 1,
+          "error": "Error: Nominatim search for '5N/34E/5S/42E' failed: Tunnel connection failed: 403 Only benchmark source hosts on HTTPS are available"
+        },
+        {
+          "event_index_zero_based": 13,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((51, 50), (23, 23), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 18,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20_weekly.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_weekly_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((1, 1, 1, 1, 1, 1, 1), (51, 50), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 19,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((51, 50), (23, 23), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20_weekly.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_weekly_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((1, 1, 1, 1, 1, 1, 1), (51, 50), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 25,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20_weekly.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_weekly_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((1, 1, 1, 1, 1, 1, 1), (51, 50), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 30,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20_weekly.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_weekly_clipped.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((1, 1, 1, 1, 1, 1, 1), (51, 50), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 47,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 49,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/kenya_2026-09-20_ensemble_mean.zarr",
+            "--output",
+            "/work/kenya_2026-09-20_period1.zarr",
+            "--dim",
+            "step",
+            "--index",
+            "0",
+            "--variable",
+            "tp"
+          ],
+          "returncode": 2,
+          "error": "                     [--value VALUE]\nselect_dim.py: error: unrecognized arguments: --variable tp"
+        }
+      ]
+    },
+    {
+      "run_id": "748c4070918842fbb01a2f3ce428068e",
+      "model": "anthropic/claude-fable-5.1",
+      "case_id": "e2e-kenya-heat",
+      "status": "token_budget",
+      "primary_observed_failure_group": "temperature_units",
+      "observation": "Weighted Celsius reduction and explicit Kelvin conversion fail.",
+      "recovery_observed": "Constructs a regional mean through unweighted mean, temperature differences and weighted anomalies; token budget ends before the rest of the task. Intermediate numerical correctness was not independently regraded.",
+      "input_tokens": 352968,
+      "output_tokens": 13415,
+      "skill_calls_failed": 5,
+      "guide_order_rejections": 1,
+      "matched_no_skills": null,
+      "evidence": [
+        {
+          "event_index_zero_based": 2,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 7,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/t2m.zarr",
+            "--output",
+            "/work/regmean.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 9,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--variable",
+            "t2m",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 11,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/t2m_std.zarr",
+            "--output",
+            "/work/regmean.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 12,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m_std.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--variable",
+            "t2m",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 18,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m_std.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        }
+      ]
+    },
+    {
+      "run_id": "801d652e2f2349fe81484bf8d5956866",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "case_id": "e2e-kenya-rainfall",
+      "status": "token_budget",
+      "primary_observed_failure_group": "zarr_chunk_serialization",
+      "observation": "Valid clipping fails twice during Zarr output serialization. Also tries remote URLs with a local-input inspection skill and deaccumulates already standardized precipitation.",
+      "recovery_observed": "Successfully substitutes coordinate selection for clipping and computes an ensemble mean, then exhausts token budget before completion.",
+      "input_tokens": 339370,
+      "output_tokens": 26048,
+      "skill_calls_failed": 5,
+      "guide_order_rejections": 1,
+      "matched_no_skills": {
+        "run_id": "5ae08df0b7524d3f87c125adcc65f4af",
+        "passed": true,
+        "status": "submitted"
+      },
+      "evidence": [
+        {
+          "event_index_zero_based": 3,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 13,
+          "action": "skill",
+          "skill": "inspect-zarr",
+          "args": [
+            "--input",
+            "gs://kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_precip_2026-09-27.zarr",
+            "--format",
+            "json",
+            "--max-values",
+            "3"
+          ],
+          "returncode": 2,
+          "error": "Error: input not found: gs:/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_precip_2026-09-27.zarr"
+        },
+        {
+          "event_index_zero_based": 14,
+          "action": "skill",
+          "skill": "inspect-zarr",
+          "args": [
+            "--input",
+            "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_precip_2026-09-27.zarr",
+            "--format",
+            "json",
+            "--max-values",
+            "3"
+          ],
+          "returncode": 2,
+          "error": "Error: input not found: https:/storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_precip_2026-09-27.zarr"
+        },
+        {
+          "event_index_zero_based": 15,
+          "action": "skill",
+          "skill": "deaccumulate",
+          "args": [
+            "--input",
+            "/work/kenya_tp.zarr",
+            "--output",
+            "/work/kenya_tp_rate.zarr",
+            "--variable",
+            "tp"
+          ],
+          "returncode": 2,
+          "error": "Error: 'tp' looks like a rate; refuse to deaccumulate"
+        },
+        {
+          "event_index_zero_based": 21,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_weekly_mm.zarr",
+            "--output",
+            "/work/kenya_weekly_mm_clip.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((1, 1, 1, 1, 1, 1), (51, 50), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "skill",
+          "skill": "clip-region",
+          "args": [
+            "--input",
+            "/work/kenya_tp.zarr",
+            "--output",
+            "/work/kenya_tp_clip.zarr",
+            "--bbox",
+            "5/34/-5/42"
+          ],
+          "returncode": 1,
+          "error": "    raise ValueError(\nValueError: Final chunk of Zarr array must be the same size or smaller than the first. Variable named 'tp' has incompatible Dask chunks ((51, 50), (23, 23), (3, 4), (6,)).Consider either rechunking using `chunk()` or instead deleting or modifying `encoding['chunks']`."
+        }
+      ]
+    },
+    {
+      "run_id": "dde4f7c714a5417a83d1509f3f78f9ab",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "case_id": "e2e-kenya-heat",
+      "status": "token_budget",
+      "primary_observed_failure_group": "temperature_units",
+      "observation": "Corrects an invalid --dim invocation, then encounters Celsius reduction and units-conversion defects; repeatedly attempts equivalent conversions.",
+      "recovery_observed": "No completed recovery. Reducing longitude first also exposes a spatial-coordinate detection failure.",
+      "input_tokens": 323281,
+      "output_tokens": 51454,
+      "skill_calls_failed": 11,
+      "guide_order_rejections": 1,
+      "matched_no_skills": {
+        "run_id": "d360dd6da5b84b1ba7cd89d9763eb681",
+        "passed": true,
+        "status": "submitted"
+      },
+      "evidence": [
+        {
+          "event_index_zero_based": 4,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 7,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/regmean.zarr",
+            "--dim",
+            "latitude",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "                        [--lat-weighted]\nsummarize_dim.py: error: unrecognized arguments: longitude"
+        },
+        {
+          "event_index_zero_based": 8,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/regmean.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 10,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "-v",
+            "t2m",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 13,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 15,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "K",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 16,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m_std.zarr",
+            "-o",
+            "/work/t2m_k.zarr",
+            "--to-units",
+            "kelvin",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 18,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m.zarr",
+            "-o",
+            "/work/K.zarr",
+            "--to-units",
+            "K",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "-i",
+            "/work/t2m_clip.zarr",
+            "-o",
+            "/work/rm1.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 1,
+          "error": "    raise OffsetUnitCalculusError(\npint.errors.OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance."
+        },
+        {
+          "event_index_zero_based": 24,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/lonmean.zarr",
+            "-o",
+            "/work/lon_k.zarr",
+            "--to-units",
+            "kelvin",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        },
+        {
+          "event_index_zero_based": 25,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "-i",
+            "/work/lonmean.zarr",
+            "-o",
+            "/work/reg2.zarr",
+            "--dim",
+            "latitude",
+            "--method",
+            "mean",
+            "--lat-weighted",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: could not identify lat/lon coords via CF metadata or name heuristics in ['entireAtmosphere', 'heightAboveGround', 'latitude', 'number', 'step', 'time', 'valid_time']. Pass --dims to override."
+        },
+        {
+          "event_index_zero_based": 26,
+          "action": "skill",
+          "skill": "unit-convert",
+          "args": [
+            "-i",
+            "/work/t2m_clip.zarr",
+            "-o",
+            "/work/ka.zarr",
+            "--to-units",
+            "K",
+            "--standard-name",
+            "air_temperature",
+            "-v",
+            "t2m"
+          ],
+          "returncode": 2,
+          "error": "Error: variable 't2m' has no units attr"
+        }
+      ]
+    },
+    {
+      "run_id": "f24de222535c4dc38b368125f59704f8",
+      "model": "qwen/qwen3.5-9b",
+      "case_id": "e2e-kenya-heat",
+      "status": "task_timeout",
+      "primary_observed_failure_group": "response_generation",
+      "observation": "Two full-length model responses contain unterminated JSON. No scientific skill call executes.",
+      "recovery_observed": "Guide reads only, then shared task deadline expires. This is not a skill implementation failure.",
+      "input_tokens": 29485,
+      "output_tokens": 16774,
+      "skill_calls_failed": 0,
+      "guide_order_rejections": 0,
+      "matched_no_skills": {
+        "run_id": "c62597910a47411eb1a85aa1e8b1fc71",
+        "passed": false,
+        "status": "submitted"
+      },
+      "evidence": [
+        {
+          "event_index_zero_based": 3,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Unterminated string starting at: line 1 column 22371 (char 22370)"
+        },
+        {
+          "event_index_zero_based": 4,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Unterminated string starting at: line 1 column 22761 (char 22760)"
+        }
+      ]
+    },
+    {
+      "run_id": "983901c8b62b46c68e1c1479f69870b3",
+      "model": "google/gemini-3.1-flash-lite",
+      "case_id": "e2e-kenya-revision",
+      "status": "token_budget",
+      "primary_observed_failure_group": "workflow_state",
+      "observation": "Uses intermediate filenames that were never produced; multiple guide-order and response-format errors interrupt the planned workflow.",
+      "recovery_observed": "Creates some missing intermediates after feedback but exhausts budget before completion.",
+      "input_tokens": 323516,
+      "output_tokens": 29801,
+      "skill_calls_failed": 2,
+      "guide_order_rejections": 6,
+      "matched_no_skills": null,
+      "evidence": [
+        {
+          "event_index_zero_based": 0,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 4,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 6,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Extra data: line 2 column 1 (char 241)"
+        },
+        {
+          "event_index_zero_based": 9,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 14,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Unterminated string starting at: line 6 column 112 (char 713)"
+        },
+        {
+          "event_index_zero_based": 15,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Reply with one valid JSON action object"
+        },
+        {
+          "event_index_zero_based": 34,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 36,
+          "action": "skill",
+          "skill": "difference",
+          "args": [
+            "--input",
+            "/work/mean_20260927_p1.zarr",
+            "--input",
+            "/work/mean_20260920_p1.zarr",
+            "--output",
+            "/work/diff_p1.zarr"
+          ],
+          "returncode": 2,
+          "error": "Error: input not found: /work/mean_20260927_p1.zarr"
+        },
+        {
+          "event_index_zero_based": 37,
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/tot_20260920_p1.zarr",
+            "--output",
+            "/work/mean_20260920_p1.zarr",
+            "--dim",
+            "number",
+            "--method",
+            "mean"
+          ],
+          "returncode": 2,
+          "error": "Error: input not found: /work/tot_20260920_p1.zarr"
+        },
+        {
+          "event_index_zero_based": 42,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 43,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        }
+      ]
+    },
+    {
+      "run_id": "7d4eb479679e4cd5bad164e48982a6a9",
+      "model": "mistralai/ministral-3b-2512",
+      "case_id": "e2e-kenya-rainfall",
+      "status": "token_budget",
+      "primary_observed_failure_group": "parameterization_and_semantics",
+      "observation": "Invents resolve-time --query; loses the negative sign on the southern bounding-box limit; repeatedly violates guide-read ordering.",
+      "recovery_observed": "Fetch eventually succeeds using national bounds rather than the specified service rectangle. Proceeds through several skills but exhausts budget.",
+      "input_tokens": 359826,
+      "output_tokens": 1446,
+      "skill_calls_failed": 3,
+      "guide_order_rejections": 7,
+      "matched_no_skills": null,
+      "evidence": [
+        {
+          "event_index_zero_based": 0,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 2,
+          "action": "skill",
+          "skill": "resolve-time",
+          "args": [
+            "--query",
+            "6 weeks",
+            "--emit",
+            "flags"
+          ],
+          "returncode": 2,
+          "error": "usage: resolve.py [-h] [--as-of AS_OF] [--emit {flags,iso,json}] [query]\nresolve.py: error: unrecognized arguments: --query"
+        },
+        {
+          "event_index_zero_based": 3,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 4,
+          "action": "skill",
+          "skill": "resolve-time",
+          "args": [
+            "--query",
+            "last-6w"
+          ],
+          "returncode": 2,
+          "error": "usage: resolve.py [-h] [--as-of AS_OF] [--emit {flags,iso,json}] [query]\nresolve.py: error: unrecognized arguments: --query"
+        },
+        {
+          "event_index_zero_based": 6,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 8,
+          "action": "skill",
+          "skill": "kenya-forecast-fetch",
+          "args": [
+            "--dataset",
+            "precip",
+            "--date",
+            "2026-09-27",
+            "--bbox",
+            "5/34/5/42",
+            "--output",
+            "/work/ecmwf_s2s_precip_20260927.zarr",
+            "--variable",
+            "tp"
+          ],
+          "returncode": 1,
+          "error": "Opening gs://kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_precip_2026-09-27.zarr\nError: --bbox 5.0/34.0/5.0/42.0 selects no grid cells; check the extent and N/W/S/E order."
+        },
+        {
+          "event_index_zero_based": 9,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 13,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 16,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 19,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 25,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        }
+      ]
+    },
+    {
+      "run_id": "4ec8b367fed84f6f9ca5688456c4ef07",
+      "model": "mistralai/ministral-3b-2512",
+      "case_id": "e2e-kenya-revision",
+      "status": "token_budget",
+      "primary_observed_failure_group": "parameterization_and_semantics",
+      "observation": "Invents resolver/select flags, chooses a nonexistent time dimension and tries to deaccumulate a standardized rate; repeated guide-order and batch errors.",
+      "recovery_observed": "Several corrected calls succeed, but the workflow remains incomplete at the token budget.",
+      "input_tokens": 354740,
+      "output_tokens": 5627,
+      "skill_calls_failed": 4,
+      "guide_order_rejections": 6,
+      "matched_no_skills": null,
+      "evidence": [
+        {
+          "event_index_zero_based": 0,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "A batch requires 1\u201316 actions"
+        },
+        {
+          "event_index_zero_based": 1,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 2,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 3,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Invalid or nested batch action"
+        },
+        {
+          "event_index_zero_based": 4,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 6,
+          "action": "skill",
+          "skill": "resolve-region",
+          "args": [
+            "--region",
+            "5N/34E/5S/42E",
+            "--output",
+            "/work/region_bbox.json"
+          ],
+          "returncode": 2,
+          "error": "usage: resolve.py [-h] [--geojson GEOJSON] code\nresolve.py: error: unrecognized arguments: --region --output /work/region_bbox.json"
+        },
+        {
+          "event_index_zero_based": 9,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 13,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 17,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 19,
+          "action": "skill",
+          "skill": "deaccumulate",
+          "args": [
+            "--input",
+            "/work/precip20260920.zarr",
+            "--output",
+            "/work/precip_daily20260920.zarr"
+          ],
+          "returncode": 2,
+          "error": "Error: 'tp' looks like a rate; refuse to deaccumulate"
+        },
+        {
+          "event_index_zero_based": 20,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        },
+        {
+          "event_index_zero_based": 22,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/precip20260920.zarr",
+            "--variable",
+            "tp",
+            "--time",
+            "2026-09-27 00:00:00/2026-10-04 00:00:00",
+            "--output",
+            "/work/week20260927.zarr"
+          ],
+          "returncode": 2,
+          "error": "                     [--value VALUE]\nselect_dim.py: error: the following arguments are required: --dim"
+        },
+        {
+          "event_index_zero_based": 23,
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/precip20260920.zarr",
+            "--output",
+            "/work/week20260927.zarr",
+            "--dim",
+            "time",
+            "--value",
+            "2026-09-27 00:00:00/2026-10-04 00:00:00"
+          ],
+          "returncode": 1,
+          "error": "           ~~~~~~~~~~~~^^^^^\nKeyError: 'time'"
+        },
+        {
+          "event_index_zero_based": 24,
+          "action": "protocol_error",
+          "skill": null,
+          "args": null,
+          "returncode": null,
+          "error": "Read this skill guide before invoking it"
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@ from .cases import cases, write_inputs
 from .grading import grade, workflow
 from .sandbox import Sandbox, ENABLED
 from .health import heartbeat, atomic_json
-from .reliability import provider_preferences,retry_wait,task_payload
+from .reliability import provider_preferences,retry_wait,task_payload,json_mode_enabled
 
 ARMS=("skills_only","skills","python","python_one_shot","docs_only")
 SKILLS_ONLY_PROMPT='''You are a weather-analysis agent using a catalog of tested skills.
@@ -65,8 +65,23 @@ Skill code runs in a separate environment; it shares /work and /inputs with Pyth
 Available skills (discover documentation as needed):
 '''
 
+GUIDED_SKILL_PROMPT='''Skill-guided workflow (required in this experiment):
+Before executing Python or invoking any skill, read the relevant catalog guides
+using read_skill in an earlier response. Start by discovering the guides for
+inspection and the operations needed by the task. Never guess command flags.
+Use catalog skill operations for supported scientific computations, rather than
+reimplementing them in Python. Read each skill's guide before invoking it.
+Python remains available for unsupported operations, diagnosing or recovering
+from skill failures, inspecting artifacts, and serializing the final answer.
+If you fall back to Python, include a brief comment in the code explaining the
+unsupported operation or observed failure that requires custom code. You do not
+need to keep retrying a broken skill. Skills and Python share /work and /inputs.
+Your first response must only read relevant guides; select command arguments
+after receiving those guides. Guide discovery is enforced by the harness.
+'''
 
-def prompt(arm,catalog=DEFAULT_CATALOG,max_calls=24,max_exec=16,allow_batch=False,network=False):
+
+def prompt(arm,catalog=DEFAULT_CATALOG,max_calls=24,max_exec=16,allow_batch=False,network=False,skill_policy=None):
     enabled=ENABLED
     if network:
         from .e2e_sandbox import E2E_ENABLED
@@ -98,6 +113,10 @@ Plan known dependent steps together; read relevant skill guides before choosing 
     if network:
         text=text.replace('Network access is disabled.', 'HTTPS access to storage.googleapis.com and naturalearth.s3.amazonaws.com is available through the configured proxy. Other internet destinations are unavailable.')
         text+='\nEND-TO-END TASK: /inputs starts empty. Retrieve the requested real archive data yourself. fsspec, aiohttp, dask, matplotlib and cartopy are installed. HTTP clients should respect HTTPS_PROXY. Save the requested figure as /work/outlook.png. Source URLs and scientific results must match the task. No answer keys are mounted.\n'
+    if arm=='skills' and skill_policy=='guided-v1':
+        text=GUIDED_SKILL_PROMPT+'\n'+text.replace(
+            'Use Python for inspection, custom calculations, or serializing output as needed.',
+            'Prefer supported catalog operations; use Python for gaps, recovery and final serialization.')
     return text
 
 
@@ -164,7 +183,8 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
     stage=ROOT/".build"/"runs"/run_id
     inputs=stage/"inputs"; work=stage/"work"
     from .fixtures import materialize
-    materialize(case,inputs)
+    cached=case.suite=="cached-forecast-v3"
+    if not cached:materialize(case,inputs)
     network=case.suite=='end-to-end-v1'
     sandbox_type=Sandbox;enabled=ENABLED;source_versions=None;figure=None
     if network:
@@ -172,9 +192,25 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
         from .e2e_validation import check_sources,collect_figure
         sandbox_type=E2ESandbox;enabled=E2E_ENABLED
         source_versions=check_sources(case)
+    if cached:
+        from .refined import source_cache,sandbox as cached_sandbox
+        from .e2e_sandbox import E2E_ENABLED
+        from .e2e_validation import collect_figure
+        inputs,source_versions=source_cache()
+        from functools import partial
+        sandbox_type=partial(cached_sandbox,image_tag='rolling-fix' if config.get('protocol_version')=='cached-heat-v4' else 'heat-v3');enabled=E2E_ENABLED
     max_calls=1 if arm=="python_one_shot" else config["max_calls"]
-    messages=[{"role":"system","content":prompt(arm,catalog,max_calls,config["max_executions"],config.get("allow_batch",False),network=network)},
+    messages=[{"role":"system","content":prompt(arm,catalog,max_calls,config["max_executions"],config.get("allow_batch",False),network=network,skill_policy=config.get('skill_policy'))},
               {"role":"user","content":json.dumps(task_payload(case,config))}]
+    if cached:
+        messages[0]['content']=prompt(arm,catalog,max_calls,config['max_executions'],config.get('allow_batch',False),network=True,skill_policy=config.get('skill_policy'))
+        messages[0]['content']=messages[0]['content'].split('\nEND-TO-END TASK:')[0]
+        messages[0]['content']=messages[0]['content'].replace("Catalog compatibility notes (global, not task solutions): unit-convert's explicit\n--to-units path is broken at this pin; use --to-standard for standard temperature\nand precipitation units. ","Catalog compatibility notes: ")
+        messages[0]['content']=messages[0]['content'].replace('HTTPS access to storage.googleapis.com and naturalearth.s3.amazonaws.com is available through the configured proxy. Other internet destinations are unavailable.','Network access is disabled; use the verified local raw archive.')
+        messages[0]['content']+='\nUse /inputs/archive.zarr (raw data, read-only). Save your own intermediates under /work and reuse them within this task. No artifacts are shared between agents. Read guides in a separate earlier response before choosing command flags; a read and call in the same batch is rejected in Skills only. A batch has at most 16 actions and stops at its first error: later outputs do not exist. Save /work/outlook.png. Local source preparation is excluded from solve time; cache hits are reported separately.'
+    if config.get('max_run_cost_usd') is not None:
+        token_note='No cumulative token limit.' if config.get('max_total_tokens') is None else f"Cumulative token limit: {config['max_total_tokens']}."
+        messages[0]['content']+=f"\nRun budget: ${config['max_run_cost_usd']:.2f} in model charges, including reservations for unconfirmed requests; {config['task_timeout_seconds']/60:g} minutes. {token_note} The harness stops before a request whose conservative cost bound does not fit. Finish and submit once all required outputs are ready."
     usage=empty_usage(); events=[]; requests=[]; status="call_budget"; execution_count=0
     actual=None; start=time.monotonic(); llm_seconds=0.; sandbox_seconds=0.; image_ids={}
     guides_read=set(); produced=set()
@@ -201,13 +237,13 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                 status="task_timeout"; break
             if ledger["spent"]+ledger.get("budget_reserve_usd",0)>=config["max_cost_usd"]:
                 status="study_budget"; break
-            if usage["total_tokens"]+usage.get('unconfirmed_token_reserve',0)>=config["max_total_tokens"]:
+            if config.get('max_total_tokens') is not None and usage["total_tokens"]+usage.get('unconfirmed_token_reserve',0)>=config["max_total_tokens"]:
                 status="token_budget"; break
             if sum(len(m["content"].encode()) for m in messages)>config["max_context_bytes"]:
                 status="context_budget"; break
             body={"model":model,"messages":messages,"max_tokens":config["max_output_tokens"],
                   "provider":provider_preferences(config,model)}
-            if config.get('json_mode'):body['response_format']={'type':'json_object'}
+            if json_mode_enabled(config,model):body['response_format']={'type':'json_object'}
             if config.get('stream_responses'):body['stream']=True
             # Apply a common, explicit reasoning setting across the pilot models.
             # Only use temperature where supported (e.g. some reasoning models reject it).
@@ -219,6 +255,13 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                 body["reasoning"]={"effort":config.get("reasoning_effort","low")}
             if "seed" in supported and config.get("send_seed",False):
                 body["seed"]=config["seed"]+rep
+            from .budget import admit_request
+            admission=admit_request(config,model,body,usage,ledger,run_id)
+            if admission and admission['status']:
+                status=admission['status']
+                events.append({'action':'budget_stop','message':'Next request does not fit the conservative spend allowance.',
+                               'turn':turn+1,**admission})
+                break
             t=time.monotonic();http_attempts+=1
             try:
                 remaining=max(1,config["task_timeout_seconds"]-(time.monotonic()-solve_start))
@@ -288,6 +331,7 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                      "provider":payload.get("provider"),"usage":call_usage,"seconds":elapsed,
                      "finish_reason":(payload.get("choices") or [{}])[0].get("finish_reason"),
                      "native_finish_reason":(payload.get("choices") or [{}])[0].get("native_finish_reason")}
+            if admission:request['budget_admission']=admission
             requests.append(request)
             # Journal raw responses immediately; API key is never serialized.
             raw=ROOT/"results"/"raw"/run_id; raw.mkdir(parents=True,exist_ok=True)
@@ -321,6 +365,8 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                 observations=[]; terminal=False
                 for child in children:
                     kind=child["action"]
+                    if arm=='skills' and config.get('skill_policy')=='guided-v1' and kind!='read_skill' and not guides_available:
+                        raise ValueError('Read relevant skill guides in an earlier response before executing or submitting. Python remains available after discovery for gaps and recovery.')
                     if arm=="skills_only" and kind=="python":
                         raise ValueError("Code execution is disabled. Read and invoke catalog skills.")
                     if kind=="submit":
@@ -349,7 +395,7 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                     elif kind in ("skill","python"):
                         if kind=="skill" and arm not in ("skills","skills_only"):
                             raise ValueError("Only Python execution is available in this arm")
-                        if kind=="skill" and arm=="skills_only" and child.get("skill") not in guides_available:
+                        if kind=="skill" and (arm=="skills_only" or config.get('skill_policy')=='guided-v1') and child.get("skill") not in guides_available:
                             raise ValueError("Read this skill guide before invoking it")
                         if execution_count>=config["max_executions"]:
                             status="execution_budget"; terminal=True; break
@@ -376,19 +422,27 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
                 if observations:
                     observation["completed_actions"]=observations
                 events.append({"action":"protocol_error","message":str(exc)})
+            if config.get('max_run_cost_usd') is not None:
+                from .budget import run_reserve
+                observation={'result':observation,'remaining_budget':{
+                    'usd':round(max(0,config['max_run_cost_usd']-usage['known_cost_usd']-run_reserve(ledger,run_id)),6),
+                    'seconds':round(max(0,config['task_timeout_seconds']-(time.monotonic()-solve_start)),1),
+                    'model_responses':max_calls-turn-1,'executions':config['max_executions']-execution_count}}
             messages.append({"role":"user","content":"Execution observation:\n"+json.dumps(observation)})
             if ledger["uncertain_cost"]:
                 status="cost_unknown"; break
         actual=sandbox.answer()
         solve_seconds=time.monotonic()-solve_start
-        if network:
+        if network or cached:
             figure=collect_figure(sandbox,ROOT/'docs/artifacts'/f'{run_id}.png')
             if figure['passed']:figure['url']=f'artifacts/{run_id}.png'
     score=grade(case.expected,actual,**case.public()['tolerance'])
     scientific_score=dict(score)
-    if network:
+    if network or cached:
         if not figure['passed']:score={'passed':False,'failures':score['failures']+['figure: required PNG delivery failed']}
-        try:check_sources(case)
+        try:
+            if cached:source_cache()
+            else:check_sources(case)
         except Exception as exc:
             status='source_changed';score={'passed':False,'failures':['Source version could not be verified after run']}
             events.append({'action':'source_error','message':str(exc)})
@@ -400,25 +454,48 @@ def run_one(case,model,arm,rep,config,client,ledger,catalog=DEFAULT_CATALOG):
             "http_attempts":http_attempts,"provider_retries":retry_count,"retry_wait_seconds":retry_wait_seconds,
             "events":events,"requests":requests,"image_ids":image_ids,
             "input_sha256":{name:tree_hash(inputs/f"{name}.zarr") for name in case.datasets}}
+    if config.get('max_run_cost_usd') is not None:
+        from .budget import run_reserve
+        result['budget']={'cap_usd':config['max_run_cost_usd'],'reserved_usd':run_reserve(ledger,run_id),
+                          'reported_usd':usage['known_cost_usd'],'stop_reason':status,
+                          'admission_policy':'conservative-request-bound-v1'}
+    if config.get('skill_policy')=='guided-v1' and arm=='skills':
+        result['skill_adoption']={'guides_read':sorted(guides_read),
+            'skill_calls':sum(e['action']=='skill' and '--help' not in e.get('args',[]) for e in events),
+            'python_calls':sum(e['action']=='python' for e in events)}
+    if cached:
+        result["input_sha256"]={"archive":source_versions["store_sha256"]}
+        result.update(scientific_correctness=scientific_score,figure=figure,source_versions=source_versions,network_events=[])
     if network:
         result.update(scientific_correctness=scientific_score,figure=figure,source_versions=source_versions,network_events=sandbox.network_events)
     return result
 
 
 def run_study(config_path,catalog=DEFAULT_CATALOG,resume=None):
-    pin=verify(catalog)
     config=json.loads(Path(config_path).read_text())
+    from .budget import validate_budget
+    validate_budget(config)
+    refined=config.get('protocol_version') in ('cached-heat-v3','cached-heat-v4')
+    if refined:
+        from .refined import verify_profile,CATALOG,CASE_ID
+        if config['cases']!=[CASE_ID]:raise ValueError('Refined profile permits only the cached heat case')
+        catalog=CATALOG;pin=verify_profile(overlay=config.get('protocol_version')=='cached-heat-v4')
+        if config.get('catalog_overlay_sha256')!=pin.get('catalog_overlay_sha256'):
+            raise ValueError('Configured catalog overlay hash differs from the reviewed patch')
+    else:pin=verify(catalog)
     if not config.get("models") or not config.get("max_cost_usd",0)>0:
         raise ValueError("Configure model IDs and a positive spend threshold")
     if not set(config["arms"])<=set(ARMS):
         raise ValueError("Unknown study arm")
-    all_cases={c.id:c for c in cases()}
+    all_cases={c.id:c for c in cases(include_refined=True)}
     chosen=[all_cases[k] for k in config["cases"]]
-    reference=json.loads((ROOT/"results/reference.json").read_text())
+    reference=json.loads((ROOT/('results/refined-reference-v4.json' if config.get('protocol_version')=='cached-heat-v4' else 'results/refined-reference.json' if refined else 'results/reference.json')).read_text())
     validated={r["case_id"] for r in reference["runs"] if
                (r.get('oracle_verified') if r['case_id'].startswith('e2e-') else r["correctness"]["passed"] and r["workflow"]["passed"])}
     if not set(config["cases"])<=validated or reference["catalog_commit"]!=pin["catalog_commit"]:
         raise ValueError("All selected cases require passing reference validation against the pinned catalog")
+    if refined and (reference.get('catalog_tree_sha256')!=pin['catalog_tree_sha256'] or reference.get('catalog_overlay_sha256')!=pin.get('catalog_overlay_sha256')):
+        raise ValueError('Refined reference must be revalidated after catalog changes')
     reference_cases={r["case_id"]:r for r in reference["runs"]}
     for case in chosen:
         ref=reference_cases[case.id]
@@ -447,7 +524,7 @@ def run_study(config_path,catalog=DEFAULT_CATALOG,resume=None):
         study={"study_id":study_id,"kind":"pilot" if config["repetitions"]<3 else "study",
                "started_at":datetime.now(timezone.utc).isoformat(),"config":config,"catalog_commit":pin["catalog_commit"],
                "core_commit":pin["core_commit"],"catalog_tree_sha256":pin["catalog_tree_sha256"],
-               "benchmark_code_sha256":tree_hash(ROOT/"weather_bench"),"requirements_sha256":hashlib.sha256((ROOT/"requirements.lock").read_bytes()).hexdigest(),
+               "catalog_overlay_sha256":pin.get("catalog_overlay_sha256"),"benchmark_code_sha256":tree_hash(ROOT/"weather_bench"),"requirements_sha256":hashlib.sha256((ROOT/"requirements.lock").read_bytes()).hexdigest(),
                "planned_runs":len(order),"runs":[],"ledger":{"spent":0.,"uncertain_cost":False}}
         if resume:
             previous=json.loads(Path(resume).read_text())

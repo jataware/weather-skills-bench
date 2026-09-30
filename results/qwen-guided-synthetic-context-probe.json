@@ -1,0 +1,37 @@
+{
+  "kind": "synthetic-context-transport-diagnostic",
+  "provider_route": "venice/fp8",
+  "input_bytes": 70288,
+  "cost_bound_usd": 0.0330944,
+  "contains_benchmark_data": false,
+  "used_in_benchmark": false,
+  "http_status": 200,
+  "provider": "Venice",
+  "generation_id": "gen-1790791323-tVJ6QBWYUi01AxTB9h22",
+  "usage": {
+    "prompt_tokens": 14334,
+    "completion_tokens": 613,
+    "total_tokens": 14947,
+    "cost": 0.0015100965,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.00152535,
+      "upstream_inference_prompt_cost": 0.0014334,
+      "upstream_inference_completions_cost": 9.195e-05
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 606,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "finish_reason": "stop",
+  "valid_response": true,
+  "seconds": 5.574978332966566
+}

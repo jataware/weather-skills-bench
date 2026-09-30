@@ -1,0 +1,316 @@
+{
+  "generated_at": "2026-09-30T16:00:39.427369+00:00",
+  "kind": "transport-probes",
+  "runs": [
+    {
+      "model": "meta-llama/llama-3.2-1b-instruct",
+      "arm": "python",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 435,
+        "completion_tokens": 19,
+        "total_tokens": 454,
+        "cost": 1.540836e-05
+      },
+      "response": "{\"action\": \"python\", \"code\": \"print(1 + 1)\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.7082973329816014
+    },
+    {
+      "model": "meta-llama/llama-3.2-1b-instruct",
+      "arm": "python",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 497,
+        "completion_tokens": 7,
+        "total_tokens": 504,
+        "cost": 1.467774e-05
+      },
+      "response": "{\"action\": \"submit\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.6343614169163629
+    },
+    {
+      "model": "meta-llama/llama-3.2-1b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2460,
+        "completion_tokens": 16,
+        "total_tokens": 2476,
+        "cost": 6.893964e-05
+      },
+      "response": "{\"action\": \"read_skill\", \"skill\": \"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.5584728750400245
+    },
+    {
+      "model": "meta-llama/llama-3.2-1b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3352,
+        "completion_tokens": 28,
+        "total_tokens": 3380,
+        "cost": 9.517068e-05
+      },
+      "response": "{\"action\": \"skill\", \"skill\": \"inspect-zarr\", \"args\": [\"--input\", \"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.9504980839556083
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "arm": "python",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 454,
+        "completion_tokens": 237,
+        "total_tokens": 691,
+        "cost": 0.000101478564
+      },
+      "response": "{\"action\":\"python\",\"code\":\"import os\\nimport fsspec\\ndef check_transport_compatibility():\\n    # Set the proxy environment variable\\n    os.environ['HTTPS_PROXY'] = 'your_proxy_url'\\n\\n    # Create an empty string to store the URL\\n    url = ''\\n\\n    # Try to create a URL with the empty string, which should raise an error\\n    try:\\n        fsspec.filesystem('gs')\\n        url = 'gs://'\\n    except Exception as e:\\n        print(f\"Transport compatibility check failed: {e}\")\\n        return\\n\\n    # Try to create a URL with a valid storage bucket\\n    try:\\n        fsspec.filesystem('naturalearth@s3.amazonaws.com')\\n        url = 'naturalearth@s3.amazonaws.com'\\n    except Exception as e:\\n        print(f\"Transport compatibility check failed: {e}\")\\n        return\\n\\n    # If both URLs were created successfully, print a success message\\n    print('Transport compatibility check passed')\\ncheck_transport_compatibility()\"}",
+      "transport_ok": true,
+      "action_valid": false,
+      "passed": false,
+      "seconds": 1.714008083101362
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2479,
+        "completion_tokens": 16,
+        "total_tokens": 2495,
+        "cost": 0.000130225689
+      },
+      "response": "{\"action\": \"read_skill\", \"skill\": \"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.6067818748997524
+    },
+    {
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "cloudflare"
+      ],
+      "json_mode": false,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Cloudflare",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3371,
+        "completion_tokens": 28,
+        "total_tokens": 3399,
+        "cost": 0.000179154261
+      },
+      "response": "{\"action\": \"skill\", \"skill\": \"inspect-zarr\", \"args\": [\"--input\", \"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.7517407089471817
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "arm": "python",
+      "providers": [
+        "deepinfra/bf16"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "passed": false,
+      "error": "HTTPStatusError",
+      "billing_complete": false,
+      "http_status": 429,
+      "error_detail": "{\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"google/gemma-3-4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"DeepInfra\",\"is_byok\":false,\"provider_error_code\":\"engine_overloaded\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing\"}},\"user_id\":\"[REDACTED]\"}",
+      "seconds": 0.2848119999980554
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "arm": "skills_only",
+      "providers": [
+        "deepinfra/bf16"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "passed": false,
+      "error": "HTTPStatusError",
+      "billing_complete": false,
+      "http_status": 429,
+      "error_detail": "{\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"google/gemma-3-4b-it is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"DeepInfra\",\"is_byok\":false,\"provider_error_code\":\"engine_overloaded\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing\"}},\"user_id\":\"[REDACTED]\"}",
+      "seconds": 0.19167220802046359
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "arm": "python",
+      "providers": [
+        "deepinfra/fp8",
+        "novita/fp8"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "DeepInfra",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 434,
+        "completion_tokens": 16,
+        "total_tokens": 450,
+        "cost": 9.2268e-06
+      },
+      "response": "{\"action\":\"python\",\"code\":\"print(1 + 1)\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 1.5091072920477018
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "arm": "python",
+      "providers": [
+        "deepinfra/fp8",
+        "novita/fp8"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "DeepInfra",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 493,
+        "completion_tokens": 6,
+        "total_tokens": 499,
+        "cost": 9.999e-06
+      },
+      "response": "{\"action\":\"submit\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 1.3763376669958234
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "deepinfra/fp8",
+        "novita/fp8"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "DeepInfra",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2459,
+        "completion_tokens": 13,
+        "total_tokens": 2472,
+        "cost": 4.9203e-05
+      },
+      "response": "{\"action\":\"read_skill\",\"skill\":\"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 2.055611458956264
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "deepinfra/fp8",
+        "novita/fp8"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "DeepInfra",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3348,
+        "completion_tokens": 23,
+        "total_tokens": 3371,
+        "cost": 6.72012e-05
+      },
+      "response": "{\"action\":\"skill\",\"skill\":\"inspect-zarr\",\"args\":[\"--input\",\"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 3.3887855829671025
+    }
+  ],
+  "known_cost_usd": 0.0007406849340000001
+}

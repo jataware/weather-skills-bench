@@ -1,0 +1,109 @@
+{
+  "passed": true,
+  "events": [
+    {
+      "action": "skill",
+      "skill": "kenya-forecast-fetch",
+      "args": [
+        "--source-store",
+        "/inputs/archive.zarr",
+        "--date",
+        "2026-09-27",
+        "--dataset",
+        "daily_vars",
+        "-v",
+        "t2m",
+        "--bbox",
+        "5/34/-5/42",
+        "-o",
+        "/work/t.zarr"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Resolved init date: 2026-09-27\nOpening gs://kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr\n/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/t.zarr\n",
+      "seconds": 1.3336281249066815
+    },
+    {
+      "action": "skill",
+      "skill": "summarize-dim",
+      "args": [
+        "-i",
+        "/work/t.zarr",
+        "-o",
+        "/work/regional.zarr",
+        "--dim",
+        "latitude",
+        "--dim",
+        "longitude",
+        "--method",
+        "mean",
+        "--lat-weighted"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/regional.zarr\n",
+      "seconds": 1.0657495829509571
+    },
+    {
+      "action": "skill",
+      "skill": "aggregate-temporal",
+      "args": [
+        "-i",
+        "/work/regional.zarr",
+        "-o",
+        "/work/rolling.zarr",
+        "--window",
+        "7",
+        "--align",
+        "right",
+        "--method",
+        "max"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/rolling.zarr\n",
+      "seconds": 1.0750470840139315
+    },
+    {
+      "action": "skill",
+      "skill": "select",
+      "args": [
+        "-i",
+        "/work/rolling.zarr",
+        "-o",
+        "/work/week1.zarr",
+        "--dim",
+        "step",
+        "--index",
+        "0"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/week1.zarr\n",
+      "seconds": 0.9372455830452964
+    },
+    {
+      "action": "skill",
+      "skill": "summarize-dim",
+      "args": [
+        "-i",
+        "/work/week1.zarr",
+        "-o",
+        "/work/median.zarr",
+        "--dim",
+        "number",
+        "--method",
+        "median"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/median.zarr\n",
+      "seconds": 0.8791382090421394
+    }
+  ],
+  "image_ids": {
+    "skills": "sha256:6c868b45471ef6c52c3a1a405b1ead48970741b62faa070444c3853c9800c77f"
+  },
+  "oracle_check": "Rolling maxima and full-axis member median match independent raw-array calculations",
+  "applied_to_active_cohort": false
+}

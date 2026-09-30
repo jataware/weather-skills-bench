@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-09-30T16:03:11.381356+00:00",
+  "kind": "transport-probes",
+  "runs": [
+    {
+      "model": "qwen/qwen-2.5-7b-instruct",
+      "arm": "python",
+      "providers": [
+        "phala"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Phala",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 435,
+        "completion_tokens": 19,
+        "total_tokens": 454,
+        "cost": 4.6827e-05
+      },
+      "response": "{\"action\": \"python\", \"code\": \"print(1 + 1)\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.6868272080319002
+    },
+    {
+      "model": "qwen/qwen-2.5-7b-instruct",
+      "arm": "python",
+      "providers": [
+        "phala"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Phala",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 497,
+        "completion_tokens": 7,
+        "total_tokens": 504,
+        "cost": 5.0589e-05
+      },
+      "response": "{\"action\": \"submit\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.4883459999691695
+    },
+    {
+      "model": "qwen/qwen-2.5-7b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "phala"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Phala",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2498,
+        "completion_tokens": 16,
+        "total_tokens": 2514,
+        "cost": 0.00025047
+      },
+      "response": "{\"action\": \"read_skill\", \"skill\": \"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.4028506249887869
+    },
+    {
+      "model": "qwen/qwen-2.5-7b-instruct",
+      "arm": "skills_only",
+      "providers": [
+        "phala"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Phala",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3420,
+        "completion_tokens": 28,
+        "total_tokens": 3448,
+        "cost": 0.000344124
+      },
+      "response": "{\"action\": \"skill\", \"skill\": \"inspect-zarr\", \"args\": [\"--input\", \"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 0.6477716249646619
+    }
+  ],
+  "known_cost_usd": 0.00069201
+}

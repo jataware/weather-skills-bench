@@ -1,8 +1,8 @@
 # Weather Skills Benchmark
 
-The new [end-to-end suite](END_TO_END.md) starts agents with no weather data: they retrieve real archived ECMWF forecasts, produce outlooks and comparison figures, and cite sources. It is a separate experiment from the ten synthetic diagnostic cases. Three independent real-data answers are verified; two catalog reference workflows pass, and the heat workflow exposes a retained Celsius-weighting defect.
+The current experiment compares **Python only**, **Skills only**, and **Python + skills** on a two-week Kenya heat outlook using verified, cached ECMWF forecast data. Four models receive the same $2 per-run allowance and 30-minute limit, with no cumulative token cap. The hybrid condition requires guide discovery and prefers supported skill operations while retaining Python for recovery. See [guided results](GUIDED_HEAT_V5_FINDINGS.md), [provider recovery results](GUIDED_HEAT_V5_RECOVERY_FINDINGS.md), and [methodology](METHODOLOGY.md). The recovery view contains all 12 outcomes and preserves the original provider-failed attempts.
 
-The latest real-data cohort is documented in [E2E_FINDINGS.md](E2E_FINDINGS.md). The independent recovery configuration adds tested provider routes, JSON output and bounded retries; [END_TO_END.md](END_TO_END.md) explains the original pilot’s rainfall ambiguity and the shared clarification in the new cohort. The completed six-model synthetic comparison is documented in [EXPANDED_FINDINGS.md](EXPANDED_FINDINGS.md). Its progress and per-condition summaries are regenerated from recorded attempts; the original pilot remains in [FINDINGS.md](FINDINGS.md).
+Earlier [live-retrieval tasks](END_TO_END.md) start agents without weather data and include downloading real archives. The cached experiment isolates analysis from download latency and uses a separately pinned, repaired catalog. The original live-data cohorts remain in [E2E_FINDINGS.md](E2E_FINDINGS.md), the synthetic comparison in [EXPANDED_FINDINGS.md](EXPANDED_FINDINGS.md), and the initial pilot in [FINDINGS.md](FINDINGS.md). These different protocols are not pooled.
 
 For a long-running study, a separate local monitor refreshes the static dashboard and findings after every saved attempt, then audits the completed dataset:
 
@@ -12,17 +12,17 @@ For a long-running study, a separate local monitor refreshes the static dashboar
 
 The monitor makes no model requests. The dashboard refreshes every 15 seconds, preserves filters, and shows worker heartbeat freshness. Completion and missing outcomes are visible in a clickable model/task coverage table. Final integrity audits are written to `results/e2e-audit.json`, `results/expanded-audit.json`, or `results/small-model-audit.json`, depending on the cohort.
 
-An auditable comparison of weather analysis agents **using skills only** and **using iterative Python**. The original availability-only and one-shot conditions remain archived. Ten deterministic, multi-step tasks exercise the actual [weather-skills-catalog](https://github.com/weather-skills/weather-skills-catalog) scripts against independent numerical oracles.
+The benchmark exercises the actual [weather-skills-catalog](https://github.com/weather-skills/weather-skills-catalog) scripts against independent numerical oracles. Original availability-only and one-shot conditions remain archived; skill adoption is measured separately from scientific correctness.
 
 The [dashboard](docs/index.html) presents model success, solve time, tokens, billed cost, matched comparisons, task briefs, expected answers, and observed skill sequences, a clickable tokens-versus-cost plot, and per-run execution/model-call logs. It opens directly in a browser and is ready for GitHub Pages. No key or backend is needed to view it.
 
 ## What is included
 
-- Ten public task briefs in `cases/`, with frozen Zarr inputs in `fixtures/`.
+- Ten synthetic diagnostics, three live-retrieval forecast tasks, and a cached heat-outlook task, with public briefs in `cases/` and frozen inputs in `fixtures/`.
 - Independent NumPy/stdlib answer calculations and actual catalog reference pipelines.
 - Numerical grading separate from skill-order and artifact-dependency checks.
 - Fresh directories and conversations for every run. Diagnostic containers have no network; end-to-end containers can reach only approved public data hosts through a proxy.
-- An OpenRouter agent loop, two current comparison arms, archived historical arms, and optional `docs_only`.
+- An OpenRouter agent loop, three current comparison arms, archived historical arms, and optional `docs_only`.
 - A static dashboard and manually triggered GitHub Pages deployment workflow.
 
 All ten reference pipelines pass locally and in containers; independent one-program Python solutions also pass all ten cases. Reference validation is not an LLM performance result. The initial model pilot uses three cases and one repetition; it is exploratory, not a statistically supported ranking.
@@ -45,7 +45,7 @@ python3.12 -m venv .venv
 
 The catalog and core are pinned separately in `catalog.lock.json`; Python dependencies are pinned in `requirements.lock`. No catalog source is modified. `fixtures/manifest.json` records content hashes. `freeze` regenerates the byte-stable input archives when intentionally revising the benchmark.
 
-## Current comparison
+## Archived synthetic comparison
 
 The expanded v2 study runs six models (Claude Fable 5.1, GPT-6 Astra, Claude Sonnet 5.5, Gemini 3.1 Flash-Lite, DeepSeek V4.1 Flash, Qwen3.5 9B) across all ten tasks and two conditions: 120 attempts. Skill guides are required, model-written code is disabled in the skills arm, and artifact submission is validated against successful skill outputs. All ten references pass with this restriction.
 
@@ -93,3 +93,20 @@ This is a dated snapshot: automatic refresh is disabled and unfinished studies
 are labelled partial snapshots. Rebuild it to include newer results. JSON and
 individual run-log downloads embed their referenced images as data URLs.
 Use `--output /path/to/report.html` to choose another filename.
+
+## Focused cached-data heat pilot
+
+The current `cached-heat-v4` experiment uses one real ECMWF heat-outlook task and three conditions: **Skills + Python**, **No Skills**, and **Skills only**. The primary comparison keeps Python available in both arms. The strict condition diagnoses catalog completeness. Earlier studies keep their original pins and results.
+
+```bash
+.venv/bin/python scripts/prepare_refined.py
+.venv/bin/python -m weather_bench.cli study --config configs/refined-heat-v4.json
+```
+
+Preparation applies `patches/catalog-reliability-v3.patch` in a separate sibling catalog worktree, verifies `catalog.refined.lock.json`, builds separate offline images, verifies cached raw objects, and checks the skill workflow against an independent Python oracle. It requires the original catalog checkout and E2E base images. The source snapshot is already checked in; repeated downloads are unnecessary. Reference validation is reused only when the source, catalog, task, expected answer, image IDs, reference code and validator hashes match. Pass `--force` to `scripts/validate_refined.py` to execute validation again.
+
+Agents receive only the immutable raw archive at `/inputs/archive.zarr` and an empty private `/work`. Successful identical skill calls can reuse unchanged outputs within their own run. Failed calls and changed inputs/outputs invalidate reuse; artifacts never transfer between agents. `results/refined-reference.json` records oracle checks, regression results and measured cache timing. The dashboard labels cache hits in execution logs.
+
+The first focused pilot completed all nine runs with no provider errors (about $0.77). It also exposed two additional temperature paths: rolling aggregation and full-axis median over quantified lazy arrays. Their independently validated fixes are in `patches/rolling-temperature-followup.patch`; reproduce with `.venv/bin/python scripts/validate_rolling_followup.py` after preparing v3. This separate image does not modify the completed pilot's catalog or scores. See `results/refined-known-issues.json` and `results/rolling-followup-validation.json`.
+
+The prepared v4 profile includes both follow-up fixes and has its own independently validated reference in `results/refined-reference-v4.json`. The nine recorded pilot attempts used v3; they are not represented as tests of the later fixes.

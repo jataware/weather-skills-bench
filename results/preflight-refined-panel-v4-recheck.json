@@ -1,0 +1,111 @@
+{
+  "generated_at": "2026-09-30T15:56:42.688823+00:00",
+  "kind": "transport-probes",
+  "runs": [
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "python",
+      "providers": [
+        "google-ai-studio",
+        "google-vertex/global"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Google",
+      "finish_reason": "stop",
+      "native_finish_reason": "STOP",
+      "usage": {
+        "prompt_tokens": 453,
+        "completion_tokens": 141,
+        "total_tokens": 594,
+        "cost": 0.0003215025
+      },
+      "response": "{\"action\": \"python\", \"code\": \"print(1 + 1)\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 1.2695340419886634
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "python",
+      "providers": [
+        "google-ai-studio",
+        "google-vertex/global"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Google",
+      "finish_reason": "stop",
+      "native_finish_reason": "STOP",
+      "usage": {
+        "prompt_tokens": 508,
+        "completion_tokens": 94,
+        "total_tokens": 602,
+        "cost": 0.00026532
+      },
+      "response": "{\"action\": \"submit\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 1.450516500044614
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "python",
+      "providers": [
+        "deepinfra/bf16",
+        "parasail/bf16"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Parasail",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 452,
+        "completion_tokens": 157,
+        "total_tokens": 609,
+        "cost": 8.36055e-05
+      },
+      "response": "{\"action\":\"python\",\"code\":\"print(1 + 1)\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 18.997284749988467
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "python",
+      "providers": [
+        "deepinfra/bf16",
+        "parasail/bf16"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "DeepInfra",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 513,
+        "completion_tokens": 200,
+        "total_tokens": 713,
+        "cost": 8.0487e-05
+      },
+      "response": "{\"action\":\"submit\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 14.281873125000857
+    }
+  ],
+  "known_cost_usd": 0.000750915
+}

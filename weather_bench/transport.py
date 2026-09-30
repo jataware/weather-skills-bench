@@ -73,6 +73,9 @@ def reserve_unconfirmed(ledger,config,model,run_id,body=None):
     # framing. Double the fixed endpoint rates to allow cache-write/route fees.
     size=sum(len(m['content'].encode()) for m in body['messages']) if body else config['max_context_bytes']
     reserve=2*((size+4096)*prices['prompt']+config['max_output_tokens']*prices['completion'])+.01
+    if config.get('max_run_cost_usd') is not None and body:
+        from .budget import request_cost_bound
+        reserve=request_cost_bound(config,model,body)
     ledger['budget_reserve_usd']=ledger.get('budget_reserve_usd',0)+reserve
     ledger.setdefault('unconfirmed_requests',[]).append({'run_id':run_id,'model':model,'reserve_usd':reserve})
     ledger['uncertain_cost']=False  # bounded, not reconciled; run cost stays unknown

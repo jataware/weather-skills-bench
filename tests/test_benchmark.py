@@ -182,7 +182,7 @@ def test_python_reference_validation_passes_every_case():
 def test_dashboard_export_preserves_published_runs_without_private_traces(monkeypatch,tmp_path):
     import shutil
     from weather_bench import report
-    source=sorted((ROOT/'results/published').glob('*.json'))[-1]
+    source=next(p for p in reversed(sorted((ROOT/'results/published').glob('*.json'))) if json.loads(p.read_text()).get('runs'))
     expected=json.loads(source.read_text())
     target=tmp_path/'results/published'; target.mkdir(parents=True)
     shutil.copy(source,target/source.name)

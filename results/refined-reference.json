@@ -1,0 +1,795 @@
+{
+  "catalog_commit": "1a0af7de3bba2d7a6c4fe67f291eb0e58640b5f5",
+  "catalog_tree_sha256": "8e779174025916e5eb54a96993d6960dff38e0d321787d308436f7d96d544686",
+  "core_commit": "e118b9531181224cb1459efbd9f2b114117f0a79",
+  "skills": {
+    "africa-itf": {
+      "name": "africa-itf",
+      "provider": "chc-skills",
+      "description": "Fetch the latest NOAA/CPC Africa Intertropical Front (ITF) / Intertropical Convergence Zone (ITCZ) position figure for continental Africa (default), West Africa, or East Africa. Use when a task needs the published dekadal ITF or ITCZ map from https://www.cpc.ncep.noaa.gov/products/international/itf/itcz.shtml (CPC uses both terms); does not produce gridded data.",
+      "doc": "skills/chc-skills/africa-itf/SKILL.md",
+      "scripts": [
+        "skills/chc-skills/africa-itf/scripts/fetch.py"
+      ],
+      "sha256": "4da3011085df163521cb65b5968e522a7c900db0c7e4223f5314baa6778d0431"
+    },
+    "iod-mode-index": {
+      "name": "iod-mode-index",
+      "provider": "chc-skills",
+      "description": "Compute the Indian Ocean Dipole Mode Index (DMI) from a pre-computed temperature-anomaly field on any spatial gridded dataset (forecast or observations) \u2014 lat-weighted averages over the west and east IOD boxes, then west minus east, plus the two box means as separate variables. Use when a task needs the IOD index in degree C; do not use when you only want maps of SST or precip over the Indian Ocean.",
+      "doc": "skills/chc-skills/iod-mode-index/SKILL.md",
+      "scripts": [
+        "skills/chc-skills/iod-mode-index/scripts/iod.py"
+      ],
+      "sha256": "724555cf3304532850abe45478705b18e926460aa6f0b5283380ba6f39e493b9"
+    },
+    "mjo-forecast-fetch": {
+      "name": "mjo-forecast-fetch",
+      "provider": "chc-skills",
+      "description": "Fetch the latest CPC CLIVAR Madden\u2013Julian Oscillation (MJO) Wheeler\u2013Hendon phase-space forecast PNG for GEFS, GEFS-extended, CFS, CMC, JMA, ECMWF, ECMWF extended-range, or BoM ACCESS-S1 (bias-corrected preferred by default). Use when a task needs the published MJO RMM diagram image from https://www.cpc.ncep.noaa.gov/products/precip/CWlink/MJO/CLIVAR/clivar_wh.shtml; does not produce gridded data.",
+      "doc": "skills/chc-skills/mjo-forecast-fetch/SKILL.md",
+      "scripts": [
+        "skills/chc-skills/mjo-forecast-fetch/scripts/fetch.py"
+      ],
+      "sha256": "11dcd93e7cf22c3d8f5f3bd36179a16431d2422e512b9a41f21834a6d53866e9"
+    },
+    "subc-mme-fetch": {
+      "name": "subc-mme-fetch",
+      "provider": "chc-skills",
+      "description": "Fetch one CHC SubC multi-model-ensemble (MME) outlook \u2014 7d, 15d, or 30d \u2014 for selected climate variables (pr/tas/tasmax/tasmin/tdps/ts mean + anomaly) from the public global archive into a weather-skills forecast Zarr. Use when a task needs a single SubC MME outlook map for clipping, comparison, or plotting; use --probe-latest with a variable to find the latest published init.",
+      "doc": "skills/chc-skills/subc-mme-fetch/SKILL.md",
+      "scripts": [
+        "skills/chc-skills/subc-mme-fetch/scripts/fetch.py"
+      ],
+      "sha256": "ae9b24bd6ad5533510a18c74bbaa445800002a9974ccc0f0be6a76dda68129f5"
+    },
+    "aggregate-temporal": {
+      "name": "aggregate-temporal",
+      "provider": "weather-skills",
+      "description": "Roll up a weather-skills standard dataset Zarr along its time axis (or forecast step axis) into fixed windows (daily, weekly, dekadal, monthly, or a pint duration like '21 day') or a rolling --window, with mean/min/max. Keeps data_interval; stamps aggregation_period, aggregation_coverage, and CF cell_methods. Rates in and rates out \u2014 use convert-to-totals for period amounts (refuses overlapping rolling series; select non-overlapping times first).",
+      "doc": "skills/weather-skills/aggregate-temporal/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/aggregate-temporal/scripts/aggregate.py"
+      ],
+      "sha256": "40de7678f11085b125adb385cc73b673627e41d9c447bc5b14b93db8a627377f"
+    },
+    "arco-era5-fetch": {
+      "name": "arco-era5-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch ARCO-ERA5 reanalysis (temperature, wind, precipitation, pressure, and more) for a date range and region from the public, credential-free Google Cloud Zarr store, and write a weather-skills standard dataset Zarr. Use when a task needs multi-variable gridded reanalysis ground truth for comparison, verification, or downstream clipping/aggregation/plotting.",
+      "doc": "skills/weather-skills/arco-era5-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/arco-era5-fetch/scripts/fetch.py"
+      ],
+      "sha256": "5a05c8f388597ea49c0522baf566316695b1738022f7ae4a5bbfcdac976cdd13"
+    },
+    "chirps-fetch": {
+      "name": "chirps-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch CHIRPS precipitation observations for a date range \u2014 the validated final product back to 1998, with a preliminary fallback for very recent days \u2014 and write a weather-skills standard dataset Zarr. Use when a task needs CHIRPS rainfall, recent or historical, e.g. to compare against a forecast or station data, or to build a reference period.",
+      "doc": "skills/weather-skills/chirps-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/chirps-fetch/scripts/fetch.py"
+      ],
+      "sha256": "62031779b6e8165b853df855eb81444624e5641b53da1580c78b21448024bd6e"
+    },
+    "clip-region": {
+      "name": "clip-region",
+      "provider": "weather-skills",
+      "description": "Spatially subset a weather-skills standard dataset Zarr to a lat/lon bbox or GeoJSON polygon. Use when you need to restrict any dataset (forecast, satellite, reanalysis, stations) before downstream aggregation or plotting. Named places: get a bbox (or polygon) from the resolve-region skill first.",
+      "doc": "skills/weather-skills/clip-region/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/clip-region/scripts/clip.py"
+      ],
+      "sha256": "1bd8484143526b2e6e00941aa1754542b22bbf9f32c68c3a34a9a38ae3287b4b"
+    },
+    "cmip6-fetch": {
+      "name": "cmip6-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch a CMIP6 climate-model projection (e.g. temperature, precipitation) for a date range and region from the public, credential-free Pangeo Google Cloud catalog, and write a weather-skills standard dataset Zarr. Use when a task needs climate-projection grids (historical or future scenario) for downstream clipping, aggregation, comparison, or plotting.",
+      "doc": "skills/weather-skills/cmip6-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/cmip6-fetch/scripts/fetch.py"
+      ],
+      "sha256": "4f047323d5ee13909e92bca1a8a1c478b0f7804a9927a53ab76aae2839be547e"
+    },
+    "coarsen": {
+      "name": "coarsen",
+      "provider": "weather-skills",
+      "description": "Coarsen or align a weather-skills standard dataset Zarr by linearly interpolating it onto a target grid defined by a resolution and an offset (target points at offset + k*resolution). Geometry-only \u2014 it changes grid spacing/alignment and adds no information. Use to make a grid coarser or to put two datasets on the same grid for comparison.",
+      "doc": "skills/weather-skills/coarsen/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/coarsen/scripts/coarsen.py"
+      ],
+      "sha256": "3ae2b82e45fa8362c5ca359bc412cfb4a1ef41a1fd609c98427091733b8fbd3c"
+    },
+    "concat": {
+      "name": "concat",
+      "provider": "weather-skills",
+      "description": "Concatenate two or more weather-skills standard dataset Zarr stores along a named dimension, optionally assigning coordinate values to the new axis. Use when combining ensemble members, stitching time windows, or merging per-country fetches into a single dataset.",
+      "doc": "skills/weather-skills/concat/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/concat/scripts/concat.py"
+      ],
+      "sha256": "b84109850da07daf2d18b05195ad2f0f85c19c412923086c8c99111a98ad00b8"
+    },
+    "convert-calendar": {
+      "name": "convert-calendar",
+      "provider": "weather-skills",
+      "description": "Convert a weather-skills standard dataset Zarr's time axis to a target CF calendar by wrapping xarray's Dataset.convert_calendar. Use to align two datasets onto a common calendar before comparison \u2014 e.g. converting a model-calendar forecast (noleap/360_day) to the standard calendar of observations. Converting to a standard calendar yields a datetime64 axis; converting to a model calendar yields a cftime axis. Dates not representable in the target calendar are dropped.",
+      "doc": "skills/weather-skills/convert-calendar/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/convert-calendar/scripts/convert_calendar.py"
+      ],
+      "sha256": "271afe7cebc6125af377949d4d1f5a0e2f0c831ac5dbb255d8ed73974b99d883"
+    },
+    "convert-to-totals": {
+      "name": "convert-to-totals",
+      "provider": "weather-skills",
+      "description": "Convert rate variables to period totals by multiplying by stamped aggregation_period (pint). Use as a terminal step before plotting. Requires aggregate-temporal first. Refuses precip totals (would double-count). Default --min-coverage 1.0. Refuses overlapping intervals \u2014 run select on time/step first.",
+      "doc": "skills/weather-skills/convert-to-totals/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/convert-to-totals/scripts/convert_to_totals.py"
+      ],
+      "sha256": "488a54371f28270e5ba528c5626a03bbd2095d7c7326a3bb78afd0d715a09907"
+    },
+    "deaccumulate": {
+      "name": "deaccumulate",
+      "provider": "weather-skills",
+      "description": "Convert a leftover cumulative-since-init forecast variable along its `step` axis into per-step rates (precip \u2192 mm day-1). Fetchers (`ecmwf-fetch`, `dynamical-fetch`, `kenya-forecast-fetch`) already write rates \u2014 do not run this after them. Use on older cumulative archives that still have amount units.",
+      "doc": "skills/weather-skills/deaccumulate/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/deaccumulate/scripts/deaccumulate.py"
+      ],
+      "sha256": "47f398926facf0897364c7d142319141314d941413b883da30d61f8274fb409f"
+    },
+    "difference": {
+      "name": "difference",
+      "provider": "weather-skills",
+      "description": "Subtract one weather-skills standard dataset Zarr from another (A \u2212 B) with xarray inner-join alignment and broadcasting \u2014 e.g. anomalies as a field minus its baseline mean, or a scenario-minus-historical change map. Use whenever two datasets must be compared cell-by-cell as a difference field.",
+      "doc": "skills/weather-skills/difference/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/difference/scripts/difference.py"
+      ],
+      "sha256": "01e40b67582cd1ac1b80c3a6f367f5f29fcc0859123b5fe4cddaf93cee76cd78"
+    },
+    "downscale": {
+      "name": "downscale",
+      "provider": "weather-skills",
+      "description": "Downscale a weather-skills standard dataset Zarr onto a finer-or-equal grid, adding information via a chosen --algorithm (linear-interpolation or q-q empirical quantile mapping). The target is given by an integer factor, a target resolution, or a reference dataset's grid. Equal resolution is accepted as a no-op on geometry (q-q still applies its mapping). Use when a task needs higher spatial resolution; to make a grid coarser, use the coarsen skill.",
+      "doc": "skills/weather-skills/downscale/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/downscale/scripts/downscale.py"
+      ],
+      "sha256": "48eeaa242ea2cd1c1944766e6681bd41fad485354ed3fc307ca54e13149c791f"
+    },
+    "dynamical-fetch": {
+      "name": "dynamical-fetch",
+      "provider": "weather-skills",
+      "description": "Prefer this over credentialed fetchers when the dynamical.org catalog has the dataset. Fetch a dataset from the open weather catalog (GFS, GEFS, ECMWF IFS-ENS, AIFS, ICON-EU, MRMS, their analyses, and the IMERG precipitation analyses) and write a weather-skills standard dataset Zarr. Use when a task needs credential-free forecast or analysis grids for downstream clipping, aggregation, comparison, or plotting. `-v` must be the catalog name (e.g. precipitation_surface), not total_precipitation / 2m_temperature from other fetchers. Pressure-level fields (`temperature_850hpa`, `geopotential_height_500hpa`) are stacked onto a `vertical` dim; `-v t` / `-v gh` select all native levels. Precip is already a rate \u2014 do not deaccumulate; aggregate-temporal then convert-to-totals for period mm.",
+      "doc": "skills/weather-skills/dynamical-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/dynamical-fetch/scripts/fetch.py"
+      ],
+      "sha256": "f30eb02c48f64a0d64f36ccbb66153460cb48ab8fe8e4ce8ba75d3fc257f1f95"
+    },
+    "ecmwf-fetch": {
+      "name": "ecmwf-fetch",
+      "provider": "weather-skills",
+      "description": "On the first call, inject secrets ECMWF_DATASTORES_URL and ECMWF_DATASTORES_KEY as environment variables \u2014 do not run once without them and retry. Prefer dynamical-fetch for medium-range ECMWF IFS-ENS / AIFS (credential-free). This skill fetches an ECMWF S2S ensemble forecast (control + perturbed) for a date and bbox from the ECMWF Data Stores (ECDS), writing a weather-skills standard dataset Zarr. Default `-v tp`. Most used: `tp`, `t2m`, `sst` (then `d2m`, winds). Pressure-level: `-v t` / `-v gh` (control only, all native levels). `-v` is the short name (`t2m`, `sst`, `t`), not ARCO `2m_temperature`. Real-time S2S has a 2-day embargo \u2014 request an init at least 2 days old. Fetch writes `tp` as a per-step rate (`mm day-1`) and temperatures as `degree_Celsius` \u2014 do not run deaccumulate after this skill. To fetch over a country, get its bbox from the resolve-region skill first.",
+      "doc": "skills/weather-skills/ecmwf-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/ecmwf-fetch/scripts/fetch.py"
+      ],
+      "sha256": "df7d38c9cecc451dadf2e0cf83632098e2117afc0c3e524fd1dc6b61ab248154"
+    },
+    "ghcn-daily-fetch": {
+      "name": "ghcn-daily-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch NOAA GHCN-Daily global in-situ station observations (precipitation, max/min/avg temperature) for a date range and region, and write a point_obs weather-skills standard dataset Zarr. Use when a task needs credential-free worldwide daily station data, e.g. to compare against gridded satellite, reanalysis, or forecast data.",
+      "doc": "skills/weather-skills/ghcn-daily-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/ghcn-daily-fetch/scripts/fetch.py"
+      ],
+      "sha256": "a9bd7b701c2f45e4560d2913b59862d384ae03d2b56f3f3f8a8407077c052c53"
+    },
+    "imerg-fetch": {
+      "name": "imerg-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch live IMERG daily satellite precipitation for a date range and write a weather-skills standard dataset Zarr. Use when a task needs recent daily IMERG rainfall, e.g. for station-vs-satellite comparison or verification. For half-hourly IMERG, use dynamical-fetch `nasa-imerg-analysis-early` / `nasa-imerg-analysis-late`.",
+      "doc": "skills/weather-skills/imerg-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/imerg-fetch/scripts/fetch.py"
+      ],
+      "sha256": "6885900b99ad2993136c95873b5da8a17492b89d05cac79566c3d3a250f9ec95"
+    },
+    "inspect-zarr": {
+      "name": "inspect-zarr",
+      "provider": "weather-skills",
+      "description": "Inspect a weather-skills standard dataset Zarr \u2014 print dimension sizes, coordinate values, and a data-variable summary (names, dims, dtype, units). Use when you need to see what is in a Zarr before clipping, selecting, aggregating, or plotting, or to confirm lat/lon/time coordinates after a fetch.",
+      "doc": "skills/weather-skills/inspect-zarr/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/inspect-zarr/scripts/inspect_zarr.py"
+      ],
+      "sha256": "a8b4e60c96538358b60a6c51214dd1d0eb0fac7afd79f4b55cd5b3167ce4c9b7"
+    },
+    "kenya-forecast-fetch": {
+      "name": "kenya-forecast-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch a raw forecast grid from the public Kenya forecasts archive (gs://kenya-forecasting-data/<date>/data/*.zarr) and write a weather-skills standard dataset Zarr. Use when a task needs analyzable Kenya pilot fields (ECMWF S2S precip/temps/winds, GEFS, medium-range precip) for clipping, aggregation, comparison, or flexible plotting via plot / plot-timeseries / plot-mediogram. For pre-rendered product PNGs, use kenya-forecast-png instead.",
+      "doc": "skills/weather-skills/kenya-forecast-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/kenya-forecast-fetch/scripts/fetch.py"
+      ],
+      "sha256": "55be810c4704526011cc9689441afa93967d82f7ee5c0f0c852da1a6972363d2"
+    },
+    "kenya-forecast-png": {
+      "name": "kenya-forecast-png",
+      "provider": "weather-skills",
+      "description": "Fetch a pre-rendered PNG from the public Kenya forecasts archive (Filestash / gs://kenya-forecasting-data) and write it to disk. Use when a task needs an official KMSA / Sheerwater product figure (weekly, dekadal, or monthly) from https://kenya-forecasts.sheerwater.rhizaresearch.org/files/ without regenerating the plot. For analyzable grids, use kenya-forecast-fetch then plot.",
+      "doc": "skills/weather-skills/kenya-forecast-png/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/kenya-forecast-png/scripts/fetch.py"
+      ],
+      "sha256": "029dba933cc3efe3caca8a730d9d53c0aa80dd5d9495b13a94ae3de28f63ec73"
+    },
+    "oisst-fetch": {
+      "name": "oisst-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch NOAA OISST v2.1 daily sea-surface temperature for a date range and region from NOAA PSL's public OPeNDAP server, and write a weather-skills standard dataset Zarr. Use when a task needs credential-free gridded SST observations, e.g. for ocean analysis or comparison against forecasts/reanalysis.",
+      "doc": "skills/weather-skills/oisst-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/oisst-fetch/scripts/fetch.py"
+      ],
+      "sha256": "c4114de0d467cbada7eeb63ce0da1d8c9148fa218dbc735c491b7e8ca0be001d"
+    },
+    "openaq-fetch": {
+      "name": "openaq-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch OpenAQ air-quality station observations (PM2.5, PM10, NO2, O3, SO2, CO) for a date range and region, and write a point_obs weather-skills standard dataset Zarr. Use when a task needs in-situ air-quality and atmospheric-composition data, e.g. to compare against gridded model output.",
+      "doc": "skills/weather-skills/openaq-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/openaq-fetch/scripts/fetch.py"
+      ],
+      "sha256": "5eedb6299e9652e23f207da6f13f32d2155d63ed73226dbb74248bd53325ab5f"
+    },
+    "plot": {
+      "name": "plot",
+      "provider": "weather-skills",
+      "description": "Render a 2D heatmap or 1D time series PNG from any gridded or station weather-skills standard dataset Zarr. Use when you need to visualize a single dataset as a map or as a time/step profile. For precipitation, run aggregate-temporal then convert-to-totals first \u2014 plot period totals (`mm`), not fetch rates (`mm day-1`).",
+      "doc": "skills/weather-skills/plot/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/plot/scripts/plot.py"
+      ],
+      "sha256": "cc300e91dd6b39042ad63814d99c63ccb1ff122482a5227c27a14764bddc74fd"
+    },
+    "plot-compare": {
+      "name": "plot-compare",
+      "provider": "weather-skills",
+      "description": "Render a side-by-side multi-panel comparison PNG of two weather-skills standard dataset Zarr stores (gridded-vs-gridded or station-vs-gridded). Use for sat-vs-station validation, model-vs-obs comparison, or cross-source QC. For precipitation, convert-to-totals after aggregate-temporal before plotting.",
+      "doc": "skills/weather-skills/plot-compare/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/plot-compare/scripts/plot_compare.py"
+      ],
+      "sha256": "8a05a058340c9d921170abdf7df95d7a6d3264c283238cdc59e5cf236a3561f6"
+    },
+    "plot-compare-forecasts": {
+      "name": "plot-compare-forecasts",
+      "provider": "weather-skills",
+      "description": "Compare two or more gridded datasets as a heatmap grid PNG. Each input is a row; columns are the union of times (forecast init+step, or a time dim on observations / analyses). A dataset that lacks a column's time is a blank n/a cell, not a dropped column. Use after aggregating to a common resolution. For precipitation, convert-to-totals after that aggregation before plotting. For a single dataset use plot; for exactly two datasets including station-vs-grid use plot-compare.",
+      "doc": "skills/weather-skills/plot-compare-forecasts/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/plot-compare-forecasts/scripts/plot_compare_forecasts.py"
+      ],
+      "sha256": "3b5fd642bd4704b192e71df90ae777fdbf22fa9de0bfac5c55d7b8198374ec40"
+    },
+    "plot-mediogram": {
+      "name": "plot-mediogram",
+      "provider": "weather-skills",
+      "description": "Render an ECMWF-style mediogram PNG comparing a forecast ensemble against an m-climate (historical) ensemble at a single lat/lon. Two-layer boxplots per time step show an extremes box underneath (p0\u2013p100 whiskers, p10\u2013p90 box, p50 median) with a wider p25\u2013p75 IQR box overlaid on top, whose visible black caps mark the IQR edges. For precipitation, run convert-to-totals after aggregate-temporal before plotting.",
+      "doc": "skills/weather-skills/plot-mediogram/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/plot-mediogram/scripts/plot_mediogram.py"
+      ],
+      "sha256": "bde35b61a0d07867cafe61e31d31f9559e235714ebd78e7c37f672346c9f3c81"
+    },
+    "plot-timeseries": {
+      "name": "plot-timeseries",
+      "provider": "weather-skills",
+      "description": "Render a single PNG with one 1D trace per input Zarr overlaid on a shared time axis. Use when you want to compare a variable across multiple weather-skills standard dataset Zarrs as line traces. Inputs whose variable still has non-time dims after selection must list those dims via repeated --reduce flags; no silent averaging. For precipitation, run aggregate-temporal then convert-to-totals first \u2014 plot totals (`mm`), not rates.",
+      "doc": "skills/weather-skills/plot-timeseries/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/plot-timeseries/scripts/plot_timeseries.py"
+      ],
+      "sha256": "70edb1af7ddda5cca0787a9a327c4536ab99ae60e3c5ec179228282d4ef67990"
+    },
+    "provenance": {
+      "name": "provenance",
+      "provider": "weather-skills",
+      "description": "Inspect the weather_skills_history provenance chain stamped on a weather-skills artifact (a standard dataset Zarr or a plot PNG) and render it as a human-readable lineage, the raw JSON chain, or a runnable reproduction script. Use when you need to answer \"how did this file come to exist, and how do I regenerate it?\" \u2014 especially for a PNG, whose chain lives in binary tEXt chunks an editor can't open.",
+      "doc": "skills/weather-skills/provenance/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/provenance/scripts/provenance.py"
+      ],
+      "sha256": "64143dd3563454cae0fda7054282fd5ac1ad13e6e015e4702b71a51cd29cd01d"
+    },
+    "rename": {
+      "name": "rename",
+      "provider": "weather-skills",
+      "description": "Rename one data variable in a weather-skills standard dataset Zarr to a new name, writing a new standard dataset. The renamed variable keeps its values and attributes; all other variables, coordinates, and dimensions pass through unchanged.",
+      "doc": "skills/weather-skills/rename/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/rename/scripts/rename.py"
+      ],
+      "sha256": "246a5d78351a7a304e683a21c333e450921e3453d023cdbbb2c9805e6da27d98"
+    },
+    "resolve-region": {
+      "name": "resolve-region",
+      "provider": "weather-skills",
+      "description": "Resolve an ISO 3166-1 alpha-3 country code, a Natural Earth multi-country region (East Africa, Western Africa), a sub-national region (state, province, county), or a leftover landmark name to a lat/lon bbox and optionally a boundary polygon GeoJSON. Use when you need to turn a country, county, or named place into a `--bbox N/W/S/E` value (or a polygon mask) for clip-region, ecmwf-fetch, plot, or plot-compare. Prefer ISO3 / country-admin1 / Natural Earth region names; Nominatim is the fallback for landmarks.",
+      "doc": "skills/weather-skills/resolve-region/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/resolve-region/scripts/resolve.py"
+      ],
+      "sha256": "106e6f9f9f6db5f6b6e2fbfa95ac4061b727bbaee342d41ef73c584f0bb2c9cc"
+    },
+    "resolve-time": {
+      "name": "resolve-time",
+      "provider": "weather-skills",
+      "description": "Resolve a relative date query (the last two weeks, today, latest, last month, now-3d) to absolute `--start-time`/`--end-time` or `--date` values from the current UTC date. Use before any fetch when the user said a relative window rather than YYYY-MM-DD. Does not know product lag \u2014 for the latest published day, run that fetcher with `--probe-latest`.",
+      "doc": "skills/weather-skills/resolve-time/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/resolve-time/scripts/resolve.py"
+      ],
+      "sha256": "b314dfb9002a2bb34893ac2b72e78cd628a9f923f0e12ef8c0595950f4119bcb"
+    },
+    "select": {
+      "name": "select",
+      "provider": "weather-skills",
+      "description": "Select entries along one named dimension of a weather-skills standard dataset Zarr, by integer position or by coordinate value. A single selection collapses the dimension and drops the coordinates it leaves scalar, so outputs from different sources are ready to concat \u2014 e.g. pick the same forecast week from several model datasets before merging them along a new model dim.",
+      "doc": "skills/weather-skills/select/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/select/scripts/select_dim.py"
+      ],
+      "sha256": "6c88331250f55d9c4fe8567f02438192f1a460e5346c1e4e578a200aac64f0cf"
+    },
+    "smap-fetch": {
+      "name": "smap-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch NASA SMAP SPL3SMP_E daily 9 km volumetric soil moisture for a bounded region and short date range via Earthdata, and write a fully CF-1.13 weather-skills standard dataset Zarr. Use when a task needs gridded land-surface soil-moisture observations, e.g. for drought or agricultural analysis, or comparison against models.",
+      "doc": "skills/weather-skills/smap-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/smap-fetch/scripts/fetch.py"
+      ],
+      "sha256": "7468d72643d1d869066a901445d98272d5df9aee208f77e2e7d456ba8eed5fc8"
+    },
+    "step-to-time": {
+      "name": "step-to-time",
+      "provider": "weather-skills",
+      "description": "Realize a forecast dataset's `step` lead-time axis as wall-clock valid times (`time = init + step`), replacing the `step` dim with a `time` dim. Use it to compare a forecast against observations \u2014 e.g. before plot-compare, plot-timeseries, or difference against a time-based dataset.",
+      "doc": "skills/weather-skills/step-to-time/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/step-to-time/scripts/step_to_time.py"
+      ],
+      "sha256": "56971fc5a766e023afcc9e8b2e191325fa5f886e3f4cb0b6c14728b5e5900191"
+    },
+    "submit-feedback": {
+      "name": "submit-feedback",
+      "provider": "weather-skills",
+      "description": "Build a prefilled GitHub new-issue link the user clicks to file feedback under their own GitHub account. You supply the title and body; the skill URL-encodes them and checks that the link fits GitHub's length limit. Use when a user wants to report a bug or suggestion about the skills.",
+      "doc": "skills/weather-skills/submit-feedback/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/submit-feedback/scripts/build_url.py"
+      ],
+      "sha256": "1cb53153706222bfb82bc0770a01833c0e74d42c9fc972639cdd7a83e18226a2"
+    },
+    "summarize-dim": {
+      "name": "summarize-dim",
+      "provider": "weather-skills",
+      "description": "Summarize one or more named dimensions of a weather-skills standard dataset Zarr with a statistic (mean, std, min, max, sum, median) \u2014 e.g. ensemble spread as the std across `number`, model disagreement as the std across a model dim, or a time-mean baseline for anomalies. Use whenever a dataset needs a statistical summary along a named dimension (the dim disappears). For coarser time windows that keep a time axis, use aggregate-temporal.",
+      "doc": "skills/weather-skills/summarize-dim/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/summarize-dim/scripts/summarize_dim.py"
+      ],
+      "sha256": "e197b6bd5e541b6f55eeb11ceb3ff28324b81071808603c3e004c84245c151f3"
+    },
+    "tahmo-fetch": {
+      "name": "tahmo-fetch",
+      "provider": "weather-skills",
+      "description": "Fetch TAHMO station observations for one or more African countries and write a weather-skills standard dataset Zarr (point_obs). Use when a task needs in-situ station rainfall/temperature/humidity/pressure, e.g. to compare against gridded satellite or forecast data.",
+      "doc": "skills/weather-skills/tahmo-fetch/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/tahmo-fetch/scripts/fetch.py"
+      ],
+      "sha256": "3a71d4890949920cbcaf3609705acc8b59f9fbe38174ed5f1943dd68eb6ab1a4"
+    },
+    "unit-convert": {
+      "name": "unit-convert",
+      "provider": "weather-skills",
+      "description": "Convert data variables in a weather-skills standard dataset to target units (pint / CF), or normalize recognized temp/precip variables to standard display units (degree_Celsius, mm day-1, mm) via --to-standard.",
+      "doc": "skills/weather-skills/unit-convert/SKILL.md",
+      "scripts": [
+        "skills/weather-skills/unit-convert/scripts/unit-convert.py"
+      ],
+      "sha256": "ee5174101c4abd264dcf0ed8a864793b2390708962920bdd5ea9407f18dfc061"
+    }
+  },
+  "runs": [
+    {
+      "case_id": "e2e-kenya-heat-cached-v3",
+      "kind": "reference",
+      "answer": {
+        "period_end_lead_days": [
+          7.0,
+          14.0
+        ],
+        "median_peak_c": [
+          26.736059913041913,
+          25.96669314843524
+        ],
+        "peak_spread_c": [
+          0.20738402049643143,
+          0.46580854794230286
+        ],
+        "minimum_member_peak_c": [
+          26.266557060379,
+          25.07084884860285
+        ],
+        "maximum_member_peak_c": [
+          27.119252489274345,
+          27.13124193075936
+        ],
+        "units": "degree_Celsius",
+        "source_url": "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr",
+        "figure": "/work/outlook.png"
+      },
+      "expected": {
+        "period_end_lead_days": [
+          7,
+          14
+        ],
+        "median_peak_c": [
+          26.736059913041938,
+          25.96669314843524
+        ],
+        "peak_spread_c": [
+          0.20738402049643295,
+          0.4658085479423048
+        ],
+        "minimum_member_peak_c": [
+          26.266557060378965,
+          25.070848848602836
+        ],
+        "maximum_member_peak_c": [
+          27.119252489274412,
+          27.131241930759323
+        ],
+        "units": "degree_Celsius",
+        "source_url": "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr",
+        "figure": "/work/outlook.png"
+      },
+      "correctness": {
+        "passed": true,
+        "failures": []
+      },
+      "scientific_correctness": {
+        "passed": true,
+        "failures": []
+      },
+      "workflow": {
+        "passed": true,
+        "matched_nodes": {
+          "forecast": true,
+          "region": true,
+          "peaks": true,
+          "fortnight": true,
+          "median": true,
+          "spread": true,
+          "minimum": true,
+          "maximum": true,
+          "figure": true
+        },
+        "dependency_edges": [
+          [
+            "forecast",
+            "region"
+          ],
+          [
+            "region",
+            "peaks"
+          ],
+          [
+            "peaks",
+            "fortnight"
+          ],
+          [
+            "fortnight",
+            "median"
+          ],
+          [
+            "fortnight",
+            "spread"
+          ],
+          [
+            "fortnight",
+            "minimum"
+          ],
+          [
+            "fortnight",
+            "maximum"
+          ],
+          [
+            "median",
+            "figure"
+          ]
+        ],
+        "forbidden_calls": [],
+        "successful_skill_calls": 9,
+        "scope": "reference recipe conformance; alternative correct algorithms may differ"
+      },
+      "oracle_verified": true,
+      "figure": {
+        "passed": true,
+        "width": 1484,
+        "height": 881,
+        "scope": "PNG delivery only; visual scientific correctness is not automatically graded"
+      },
+      "events": [
+        {
+          "action": "skill",
+          "skill": "kenya-forecast-fetch",
+          "args": [
+            "--output",
+            "/work/forecast.zarr",
+            "--dataset",
+            "daily_vars",
+            "--date",
+            "2026-09-27",
+            "--bbox",
+            "5/34/-5/42",
+            "--variable",
+            "t2m",
+            "--source-store",
+            "/inputs/archive.zarr"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "Resolved init date: 2026-09-27\nOpening gs://kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr\n/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/forecast.zarr\n",
+          "seconds": 1.6281963749788702
+        },
+        {
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/forecast.zarr",
+            "--output",
+            "/work/region.zarr",
+            "--dim",
+            "latitude",
+            "--dim",
+            "longitude",
+            "--method",
+            "mean",
+            "--lat-weighted"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/region.zarr\n",
+          "seconds": 1.3811006670584902
+        },
+        {
+          "action": "skill",
+          "skill": "aggregate-temporal",
+          "args": [
+            "--input",
+            "/work/region.zarr",
+            "--output",
+            "/work/peaks.zarr",
+            "--period",
+            "weekly",
+            "--method",
+            "max"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/peaks.zarr\n",
+          "seconds": 1.0957078749779612
+        },
+        {
+          "action": "skill",
+          "skill": "select",
+          "args": [
+            "--input",
+            "/work/peaks.zarr",
+            "--output",
+            "/work/fortnight.zarr",
+            "--dim",
+            "step",
+            "--value",
+            "7D",
+            "--value",
+            "14D"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/fortnight.zarr\n",
+          "seconds": 1.0327245000516996
+        },
+        {
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/fortnight.zarr",
+            "--output",
+            "/work/median.zarr",
+            "--dim",
+            "number",
+            "--method",
+            "median"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/median.zarr\n",
+          "seconds": 0.9887198330834508
+        },
+        {
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/fortnight.zarr",
+            "--output",
+            "/work/spread.zarr",
+            "--dim",
+            "number",
+            "--method",
+            "std"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/spread.zarr\n",
+          "seconds": 0.9895112909143791
+        },
+        {
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/fortnight.zarr",
+            "--output",
+            "/work/minimum.zarr",
+            "--dim",
+            "number",
+            "--method",
+            "min"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/minimum.zarr\n",
+          "seconds": 0.9734909579856321
+        },
+        {
+          "action": "skill",
+          "skill": "summarize-dim",
+          "args": [
+            "--input",
+            "/work/fortnight.zarr",
+            "--output",
+            "/work/maximum.zarr",
+            "--dim",
+            "number",
+            "--method",
+            "max"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/maximum.zarr\n",
+          "seconds": 1.0208184579387307
+        },
+        {
+          "action": "skill",
+          "skill": "plot",
+          "args": [
+            "--input",
+            "/work/median.zarr",
+            "--output",
+            "/work/outlook.png",
+            "--style",
+            "timeseries",
+            "--title",
+            "Median hottest daily regional mean (\u00b0C) \u00b7 issue 2026-09-27"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "Wrote: /work/outlook.png\n",
+          "seconds": 1.3765135830035433
+        }
+      ],
+      "image_ids": {
+        "python": "sha256:2119dae2791d07bded28bf93fca7261d54d19119fbe1f23e0bf8a9077cb6beee",
+        "skills": "sha256:631fadd0419f08f24fff0a8a26d364f43706415359972ea033d73f46ad73f606"
+      },
+      "input_sha256": {
+        "archive": "a375ebf2b9b383dfed3a15b748fe3ff8e1661eb4af1ad3816d4ddb4aa2fb06ad"
+      },
+      "source_versions": {
+        "mode": "immutable_local_archive",
+        "manifest_sha256": "c6ba7885e9b2368c11fa58cec85b0b705781eab6839c7b3e663c4085920191d8",
+        "source_url": "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr",
+        "objects": 85,
+        "version_match": true,
+        "store_sha256": "a375ebf2b9b383dfed3a15b748fe3ff8e1661eb4af1ad3816d4ddb4aa2fb06ad"
+      },
+      "wall_seconds": 19.256530832964927,
+      "python_reference": {
+        "answer": {
+          "period_end_lead_days": [
+            7,
+            14
+          ],
+          "median_peak_c": [
+            26.73605991304193,
+            25.96669314843525
+          ],
+          "peak_spread_c": [
+            0.2073840204964326,
+            0.46580854794230453
+          ],
+          "minimum_member_peak_c": [
+            26.266557060378958,
+            25.070848848602843
+          ],
+          "maximum_member_peak_c": [
+            27.119252489274402,
+            27.131241930759334
+          ],
+          "units": "degree_Celsius",
+          "source_url": "https://storage.googleapis.com/kenya-forecasting-data/2026-09-27/data/ECMWF_s2s_daily_vars_2026-09-27.zarr",
+          "figure": "/work/outlook.png"
+        },
+        "correctness": {
+          "passed": true,
+          "failures": []
+        },
+        "figure": {
+          "passed": true,
+          "width": 900,
+          "height": 500,
+          "scope": "PNG delivery only; visual scientific correctness is not automatically graded"
+        },
+        "event": {
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "",
+          "seconds": 1.0839149169623852
+        }
+      },
+      "regressions": {
+        "weighted_celsius": true,
+        "explicit_kelvin_conversion": {
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/kelvin.zarr\n",
+          "seconds": 1.050972625031136
+        },
+        "clipping": {
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/clipped.zarr\n",
+          "seconds": 1.1642464590258896
+        },
+        "repeat_skill_cache": {
+          "returncode": 0,
+          "stdout": "",
+          "stderr": "/usr/local/lib/python3.12/site-packages/zarr/api/asynchronous.py:246: ZarrUserWarning: Consolidated metadata is currently not part in the Zarr format 3 specification. It may not be supported by other zarr implementations and may change in the future.\n  warnings.warn(\nWrote: /work/region.zarr\n",
+          "seconds": 0.013586209039203823,
+          "cache_hit": true,
+          "cached_execution_seconds": 1.3811006670584902
+        }
+      },
+      "cache_key": "ad454f7756f180b0495f31ca0916d74f3142332bf6f280ab4f55d27e787bbdba"
+    }
+  ]
+}

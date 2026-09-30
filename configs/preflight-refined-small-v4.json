@@ -1,0 +1,92 @@
+[
+  {
+    "model": "meta-llama/llama-3.2-1b-instruct",
+    "arm": "python",
+    "providers": [
+      "cloudflare"
+    ],
+    "json_mode": false,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "meta-llama/llama-3.2-1b-instruct",
+    "arm": "skills_only",
+    "providers": [
+      "cloudflare"
+    ],
+    "json_mode": false,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "meta-llama/llama-3.2-3b-instruct",
+    "arm": "python",
+    "providers": [
+      "cloudflare"
+    ],
+    "json_mode": false,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "meta-llama/llama-3.2-3b-instruct",
+    "arm": "skills_only",
+    "providers": [
+      "cloudflare"
+    ],
+    "json_mode": false,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "google/gemma-3-4b-it",
+    "arm": "python",
+    "providers": [
+      "deepinfra/bf16"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "google/gemma-3-4b-it",
+    "arm": "skills_only",
+    "providers": [
+      "deepinfra/bf16"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "arm": "python",
+    "providers": [
+      "deepinfra/fp8",
+      "novita/fp8"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "arm": "skills_only",
+    "providers": [
+      "deepinfra/fp8",
+      "novita/fp8"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  }
+]

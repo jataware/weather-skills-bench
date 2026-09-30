@@ -1,0 +1,123 @@
+{
+  "models": [
+    "qwen/qwen3.5-9b"
+  ],
+  "arms": [
+    "python",
+    "skills_only",
+    "skills"
+  ],
+  "providers": {
+    "qwen/qwen3.5-9b": [
+      "siliconflow/fp8",
+      "venice/fp8"
+    ]
+  },
+  "cases": [
+    "e2e-kenya-heat-cached-v3"
+  ],
+  "repetitions": 1,
+  "seed": 20260929,
+  "temperature": 0,
+  "reasoning_effort": "low",
+  "max_cost_usd": 6,
+  "max_calls": 80,
+  "max_executions": 120,
+  "max_total_tokens": null,
+  "max_output_tokens": 16384,
+  "max_context_bytes": 500000,
+  "task_timeout_seconds": 1800,
+  "execution_timeout_seconds": 240,
+  "request_timeout_seconds": 300,
+  "allow_batch": true,
+  "protocol_version": "cached-heat-v4",
+  "study_label": "Qwen guided skills \u00b7 provider retries",
+  "hard_request_deadline": true,
+  "unknown_cost_policy": "reserve",
+  "billing_prices": {
+    "qwen/qwen3.5-9b": {
+      "prompt": 1e-07,
+      "completion": 2.5e-07
+    }
+  },
+  "endpoint_parameters": {
+    "qwen/qwen3.5-9b": [
+      "frequency_penalty",
+      "include_reasoning",
+      "logit_bias",
+      "max_tokens",
+      "presence_penalty",
+      "reasoning",
+      "repetition_penalty",
+      "response_format",
+      "seed",
+      "stop",
+      "structured_outputs",
+      "temperature",
+      "top_k",
+      "top_p"
+    ]
+  },
+  "study_role": "end-to-end",
+  "json_mode": true,
+  "provider_allow_fallbacks": true,
+  "recover_model_response_errors": true,
+  "provider_retry": {
+    "max_retries_per_run": 3,
+    "max_consecutive_retries": 2,
+    "base_delay_seconds": 2,
+    "max_delay_seconds": 30,
+    "http_statuses": [
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "transport_errors": [
+      "ReadTimeout",
+      "RemoteProtocolError",
+      "ConnectTimeout",
+      "ConnectError",
+      "ReadError",
+      "WriteError",
+      "completion_error",
+      "server_error"
+    ]
+  },
+  "study_note": "One new isolated attempt per terminal provider-failed cell from guided-heat-v5; all three Qwen conditions are eligible. Prompt policy, task, catalog, scientific grading and per-run limits are unchanged. Provider allowlist changes from DeepInfra/Parasail BF16 to tested SiliconFlow/Venice FP8. Provider and quantization effects cannot be separated. Original failures and charges remain linked in the recovery view. Recovery maximum $6, within the original $24 overall allowance after $1.3201939179 recorded original spend and $0.001262547 route probes. No task failures are rerun or replaced.",
+  "provider_price_caps": {
+    "qwen/qwen3.5-9b": {
+      "prompt": 0.1,
+      "completion": 0.25
+    }
+  },
+  "task_clarifications": {},
+  "output_stem": "guided-heat-v5-recovery",
+  "stream_responses": true,
+  "fresh_http_connections": true,
+  "primary_skill_arm": "skills",
+  "catalog_overlay_sha256": "63c4d59e1ebf9038490f8868a467f242a721f69fa3dd8b4682643790645c5cb6",
+  "exclusion_note": "GPT-6 Astra is excluded from this comparison because it helped develop the benchmark, tasks, and harness. This avoids evaluating the benchmark-authoring model; it does not establish that the remaining evaluation is free of design bias. Earlier Astra runs remain in archived experiments.",
+  "excluded_models": [
+    {
+      "model": "openai/gpt-6-astra",
+      "reason": "Benchmark development involvement"
+    }
+  ],
+  "experiment_version": "guided-heat-v5",
+  "skill_policy": "guided-v1",
+  "max_run_cost_usd": 2,
+  "comparison_label": "Heat outlook \u00b7 guided skills \u00b7 provider recovery",
+  "retry_sources": [
+    "20260930T170131Z-423336"
+  ],
+  "comparison_parent": "20260930T170131Z-423336",
+  "retry_attempts": [
+    "96ab989cf512409784a5b6b4cd81fff0",
+    "9152b392161845c1a125f32a401a7559",
+    "d8c9e21203a24ea394a3547c56aff7bd"
+  ],
+  "preflight_report": "results/preflight-guided-qwen-recovery.json",
+  "model_transport_note": "Qwen recovery uses SiliconFlow FP8 and Venice FP8 after both previous BF16 hosts returned HTTP 429 capacity overload. Same model ID, but provider and quantization changed. Other models retain their original outcomes. This is a post-hoc recovery comparison, not a uniform-provider rerun."
+}

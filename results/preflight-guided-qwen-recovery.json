@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-09-30T17:36:00.398062+00:00",
+  "kind": "transport-probes",
+  "runs": [
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "providers": [
+        "siliconflow/fp8"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "SiliconFlow",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2625,
+        "completion_tokens": 75,
+        "total_tokens": 2700,
+        "cost": 0.0002710125
+      },
+      "response": "{\"action\":\"read_skill\",\"skill\":\"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 3.343863832997158
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "providers": [
+        "siliconflow/fp8"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "SiliconFlow",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3546,
+        "completion_tokens": 88,
+        "total_tokens": 3634,
+        "cost": 0.000364122
+      },
+      "response": "{\"action\":\"skill\",\"skill\":\"inspect-zarr\",\"args\":[\"--input\",\"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 2.925770374946296
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "providers": [
+        "venice/fp8"
+      ],
+      "json_mode": true,
+      "turn": 1,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Venice",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2625,
+        "completion_tokens": 54,
+        "total_tokens": 2679,
+        "cost": 0.000267894
+      },
+      "response": "{\"action\":\"read_skill\",\"skill\":\"inspect-zarr\"}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 2.966080292011611
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "arm": "skills",
+      "providers": [
+        "venice/fp8"
+      ],
+      "json_mode": true,
+      "turn": 2,
+      "http_status": 200,
+      "stream": true,
+      "provider": "Venice",
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3546,
+        "completion_tokens": 57,
+        "total_tokens": 3603,
+        "cost": 0.0003595185
+      },
+      "response": "{\"action\":\"skill\",\"skill\":\"inspect-zarr\",\"args\":[\"--input\",\"/inputs/example.zarr\"]}",
+      "transport_ok": true,
+      "action_valid": true,
+      "passed": true,
+      "seconds": 1.2476573750609532
+    }
+  ],
+  "known_cost_usd": 0.0012625470000000001
+}

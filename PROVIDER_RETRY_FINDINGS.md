@@ -1,22 +1,27 @@
 # End-to-end real-forecast study
 
-**Running: 6/15 recorded attempts.** Study `20260930T133554Z-9c118f`.
+**Complete: 15/15 recorded attempts.** Study `20260930T133554Z-9c118f`.
 
 6 models, 3 real-forecast end-to-end tasks, skills-only versus No Skills (Python with execution feedback), one repetition. One-shot is absent. Operator interruptions are unscored; provider errors remain in operational success rates. Matched capability tests exclude provider errors and interruptions.
 
 | Model | Condition | Passed / scored | Median seconds | Mean tokens | USD / attempt | USD / success | Provider errors |
 |---|---|---:|---:|---:|---:|---:|---:|
-| DeepSeek V4.1 Flash | Skills only | 0/1 | 158.2 | 365,418 | $0.0350 | — | 0 |
-| Ministral 3 3B | Skills only | 0/2 | 53.4 | 360,820 | $0.0055 | — | 0 |
+| Claude Fable 5.1 | No Skills | 1/1 | 41.7 | 19,306 | $0.2666 | $0.2666 | 0 |
+| DeepSeek V4.1 Flash | Skills only | 0/2 | 599.5 | 363,328 | $0.0382 | — | 0 |
+| Gemini 3.1 Flash-Lite | No Skills | 0/1 | 54.4 | 64,888 | $0.0258 | — | 0 |
+| Ministral 3 3B | No Skills | 0/2 | 106.7 | 124,658 | $0.0028 | — | 1 |
+| Ministral 3 3B | Skills only | 0/3 | 62.9 | 364,034 | $0.0058 | — | 0 |
 | GPT-6 Astra | No Skills | 2/2 | 60.7 | 31,202 | $0.2388 | $0.2388 | 0 |
-| Qwen3.5 9B | Skills only | 0/1 | 1200.3 | 46,259 | Unknown | — | 0 |
+| Qwen3.5 9B | No Skills | 0/2 | 245.3 | 30,197 | $0.0034 | — | 2 |
+| Qwen3.5 9B | Skills only | 0/2 | 1200.3 | 172,760 | Unknown | — | 0 |
 
-Reported study charges: **$0.5296**. Unconfirmed charges are additional; the $0.1144 reserve is a budget precaution, not billed spend. Preflight charges are recorded separately in `results/streaming-provider-probes.json`.
+Reported study charges: **$0.9127**. Unconfirmed charges are additional; the $0.1496 reserve is a budget precaution, not billed spend. Preflight charges are recorded separately in `results/streaming-provider-probes.json`.
 
 ## Paired comparisons
 
 | Model | Evaluable pairs | Skills wins | No Skills wins | Exact McNemar p | Holm-adjusted p |
 |---|---:|---:|---:|---:|---:|
+| Ministral 3 3B | 1 | 0 | 0 | 1.0000 | 1.0000 |
 
 These are exploratory comparisons on a small, deliberately chosen archived real-forecast task set. An insignificant difference does not establish equivalence. Interim rows have unequal coverage and should not be used to rank models.
 

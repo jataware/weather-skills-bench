@@ -1,0 +1,19 @@
+{
+  "generation_id": "gen-1790790298-n1KRJKZnAx6cLK0Y1axb",
+  "http_status": 200,
+  "receipt": {
+    "model": "qwen/qwen3.5-9b-20260310",
+    "cancelled": false,
+    "latency": 16168,
+    "generation_time": 299875,
+    "tokens_prompt": 6629,
+    "tokens_completion": 1610,
+    "native_tokens_prompt": 8804,
+    "native_tokens_completion": 6438,
+    "finish_reason": null,
+    "native_finish_reason": null,
+    "id": "gen-1790790298-n1KRJKZnAx6cLK0Y1axb",
+    "total_cost": 0.001827639,
+    "provider_name": "SiliconFlow"
+  }
+}

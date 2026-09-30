@@ -1,0 +1,24 @@
+[
+  {
+    "model": "qwen/qwen-2.5-7b-instruct",
+    "arm": "python",
+    "providers": [
+      "phala"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  },
+  {
+    "model": "qwen/qwen-2.5-7b-instruct",
+    "arm": "skills_only",
+    "providers": [
+      "phala"
+    ],
+    "json_mode": true,
+    "reasoning": false,
+    "stream": true,
+    "turns": 2
+  }
+]

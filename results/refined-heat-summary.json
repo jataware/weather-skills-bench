@@ -1,0 +1,253 @@
+{
+  "study_id": "20260930T151924Z-3a0c3f",
+  "state": "Complete",
+  "recorded_attempts": 9,
+  "planned_attempts": 9,
+  "condition_statistics": [
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "python",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 1,
+      "success_rate": 1.0,
+      "wilson_95": [
+        0.20654931437723745,
+        1
+      ],
+      "median_seconds": 21.212798333959654,
+      "mean_tokens": 22931,
+      "known_cost_usd": 0.0110812185,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0110812185,
+      "cost_per_success_usd": 0.0110812185,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "skills",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 30.531680707936175,
+      "mean_tokens": 53166,
+      "known_cost_usd": 0.018997233750000002,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.018997233750000002,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 2,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "arm": "skills_only",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 122.66042191698216,
+      "mean_tokens": 206634,
+      "known_cost_usd": 0.07572161024999999,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.07572161024999999,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 10,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 1
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "python",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 103.1193164170254,
+      "mean_tokens": 152217,
+      "known_cost_usd": 0.0032270238,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0032270238,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "skills",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 123.26810545800254,
+      "mean_tokens": 202627,
+      "known_cost_usd": 0.004659316199999999,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.004659316199999999,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 3,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 1
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "arm": "skills_only",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 0,
+      "success_rate": 0.0,
+      "wilson_95": [
+        0,
+        0.7934506856227626
+      ],
+      "median_seconds": 29.82529412501026,
+      "mean_tokens": 215006,
+      "known_cost_usd": 0.0037760184,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.0037760184,
+      "cost_per_success_usd": null,
+      "provider_errors": 0,
+      "protocol_rejections": 5,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 1
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "arm": "python",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 1,
+      "success_rate": 1.0,
+      "wilson_95": [
+        0.20654931437723745,
+        1
+      ],
+      "median_seconds": 21.504569415934384,
+      "mean_tokens": 11147,
+      "known_cost_usd": 0.10804860000000001,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.10804860000000001,
+      "cost_per_success_usd": 0.10804860000000001,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "arm": "skills",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 1,
+      "success_rate": 1.0,
+      "wilson_95": [
+        0.20654931437723745,
+        1
+      ],
+      "median_seconds": 29.676852082950063,
+      "mean_tokens": 20629,
+      "known_cost_usd": 0.14937466500000002,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.14937466500000002,
+      "cost_per_success_usd": 0.14937466500000002,
+      "provider_errors": 0,
+      "protocol_rejections": 1,
+      "runs_using_skills": 0,
+      "runs_reading_guides": 0
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "arm": "skills_only",
+      "recorded": 1,
+      "scored": 1,
+      "passed": 1,
+      "success_rate": 1.0,
+      "wilson_95": [
+        0.20654931437723745,
+        1
+      ],
+      "median_seconds": 85.58122749999166,
+      "mean_tokens": 87528,
+      "known_cost_usd": 0.39048124500000003,
+      "cost_complete": true,
+      "cost_per_attempt_usd": 0.39048124500000003,
+      "cost_per_success_usd": 0.39048124500000003,
+      "provider_errors": 0,
+      "protocol_rejections": 0,
+      "runs_using_skills": 1,
+      "runs_reading_guides": 1
+    }
+  ],
+  "paired_statistics": [
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "pairs": 1,
+      "tasks": 1,
+      "excluded_provider_pairs": 0,
+      "skills_only_wins": 0,
+      "python_only_wins": 1,
+      "both_pass": 0,
+      "both_fail": 0,
+      "success_difference": -1.0,
+      "task_bootstrap_95": null,
+      "mcnemar_exact_p": 1.0,
+      "inference_note": "Exploratory; tasks are a fixed diagnostic set. Bootstrap resamples whole task effects and is omitted at degenerate boundaries. McNemar is omitted when fixtures repeat.",
+      "mcnemar_holm_p": 1
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "pairs": 1,
+      "tasks": 1,
+      "excluded_provider_pairs": 0,
+      "skills_only_wins": 0,
+      "python_only_wins": 0,
+      "both_pass": 0,
+      "both_fail": 1,
+      "success_difference": 0.0,
+      "task_bootstrap_95": null,
+      "mcnemar_exact_p": 1.0,
+      "inference_note": "Exploratory; tasks are a fixed diagnostic set. Bootstrap resamples whole task effects and is omitted at degenerate boundaries. McNemar is omitted when fixtures repeat.",
+      "mcnemar_holm_p": 1
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "pairs": 1,
+      "tasks": 1,
+      "excluded_provider_pairs": 0,
+      "skills_only_wins": 0,
+      "python_only_wins": 0,
+      "both_pass": 1,
+      "both_fail": 0,
+      "success_difference": 0.0,
+      "task_bootstrap_95": null,
+      "mcnemar_exact_p": 1.0,
+      "inference_note": "Exploratory; tasks are a fixed diagnostic set. Bootstrap resamples whole task effects and is omitted at degenerate boundaries. McNemar is omitted when fixtures repeat.",
+      "mcnemar_holm_p": 1
+    }
+  ]
+}
